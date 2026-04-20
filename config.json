@@ -1,0 +1,7 @@
+{
+  "input_path": "sourcecode/Royalty%20Calculation.json",
+  "prompt_path": "prompts/retool_doc_prompt.md",
+  "output_dir": "output",
+  "model": "gemini-3.1-flash-lite-preview",
+  "gemini_api_key": "AIzaSyC5u2XLyAw87_rRbZwXhptDlcY6TgiVqyQ"
+}
