@@ -7,6 +7,7 @@ This repo currently includes two command-line scripts:
 - `generate_retool_docs.py`
   - Parses and normalizes a Retool export before sending structured context to Gemini.
   - Best when you want Gemini to work from extracted queries, JavaScript logic, widgets, and dependencies instead of the raw export blob.
+  - HIGH TOKEN USAGE / FLOW LIMITED
 - `generate_retool_docs_raw.py`
   - Sends the raw source file content directly to Gemini with no Retool parsing, no chunk preprocessing, and no batch logic.
   - Best when you want the model to read the original file as-is.

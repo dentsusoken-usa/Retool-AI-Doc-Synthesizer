@@ -1,71 +1,67 @@
 # Royalty Calculation App Documentation
 
 ## Summary
-The Royalty Calculation app is a Retool-based financial management tool designed to track sales, calculate royalty adjustments, manage Minimum Guarantee (MG) balances, and generate monthly royalty reports. It provides a workflow for closing monthly royalty periods and managing contract transfers between licensors.
+The Royalty Calculation app is a Retool-based financial management tool designed to automate, track, and report royalty payments and adjustments for licensors. It manages the lifecycle of royalty billing, including the calculation of Minimum Guarantee (MG) balances, processing of sales data, and the generation of monthly royalty reports.
 
-## Main Purpose and Workflow
-The application serves as a centralized interface for:
-1. **Sales Management:** Viewing, creating, and updating sales records.
-2. **Royalty Calculation:** Calculating royalties based on sales and adjustments, including tracking MG balances.
-3. **Monthly Closing:** Finalizing monthly royalty data and locking periods to prevent further modifications.
-4. **Reporting:** Generating Excel-based royalty reports for specific licensors and contracts.
+## Purpose and Workflow
+The primary purpose of the app is to calculate royalty obligations by reconciling sales data against contract terms and MG balances.
 
-**Major Data Flows:**
-- **Input:** Users provide date ranges and select filters (Licensor, Game Title, GL Account) via UI widgets.
-- **Processing:** Queries fetch data from the `NISA_mysql_connection`. JavaScript logic (e.g., `calculateMGBalance`, `exportReport`) processes this data to compute balances and format Excel files.
-- **Output:** The app displays data in tables and allows users to export reports or update records in the database.
+### Workflow
+1.  **Data Ingestion:** Sales data is queried and displayed in the "Sales" tab.
+2.  **Calculation:** The app calculates MG balances by comparing current royalty due and adjustments against prior balances.
+3.  **Billing:** Users can generate "Royalty Billing Records" for specific periods.
+4.  **Reporting:** The app generates Excel reports for specific licensors and contracts, incorporating royalty adjustments and sales data.
+5.  **Closing:** Users can "Close" a month, which locks the data for that period.
+
+### Major Data Flows
+*   **Sales Data:** Fetched via `get_sales` and displayed in the "Sales" table.
+*   **Royalty Adjustments:** Managed through the "Royalty Adjustment" tab, allowing users to create, update, and view adjustments.
+*   **MG Balance:** Calculated via `calculateMGBalance`, which aggregates data from `v_all_transactions` and `v_all_royalty_adjustment`.
+*   **Reporting:** The `create_report` JavaScript block uses `ExcelJS` to generate and download reports based on filtered data.
 
 ## Technical Components
 
 ### Key SQL Queries
-- `get_all_items`: Retrieves transaction data for the selected date range.
-- `calc_current_mg_balance`: A complex query using `UNION` to calculate MG balances by comparing `v_all_transactions` and `v_all_royalty_adjustment` against contract terms.
-- `create_changed_records` / `create_open_original_records`: Used to generate billing records based on whether the month is closed or open.
-- `insert_monthly_royalty`: Performs a bulk insert into the `monthly_royalty` table.
+*   **`calc_current_mg_balance`**: A complex SQL query that calculates the MG balance by subtracting prior royalties and adjustments from the beginning balance.
+*   **`create_changed_records` / `create_open_original_records`**: These queries generate the billing records based on whether the month is closed or open.
+*   **`get_sales_records`**: Aggregates sales data, handling logic for licensor changes via `target_game_titles`.
 
 ### JavaScript Logic
-- `calculateMGBalance`: Orchestrates the calculation of MG balances by triggering multiple sub-queries (`get_royalty_due_from_closed_month`, `get_royalty_due_from_open_month`, etc.) and aggregating the results.
-- `exportReport`: Uses the `ExcelJS` library to generate and download multi-sheet Excel reports. It iterates through months, fetches data, applies formatting (borders, number formats), and triggers a file download.
-- `transfer_licensors`: A recursive function that handles the transfer of contracts between licensors by updating the `active_contract` table and inserting new records into the `contract` table.
+*   **`calculateMGBalance`**: The core engine for the app. It orchestrates the retrieval of royalty data and calculates the MG balance for each contract.
+*   **`create_report`**: A complex JS block that uses the `ExcelJS` library to format and export data into an Excel file. It includes helper functions for styling, borders, and layout management.
+*   **`transfer_licensors`**: Handles the logic for transferring contracts between licensors by inserting new contract records and updating the `active_contract` table.
 
 ### Key Widgets
-- `tabbedContainer1`: The primary navigation component separating the app into functional areas (Sales, Royalty Calculation, Adjustment, Billing, Report, Close Month).
-- `royalty_table`: Displays transaction data with conditional row coloring based on unit price changes.
-- `delete_modal`: A safety-gated modal for deleting records, which checks if a period is closed before allowing deletion.
+*   **`tabbedContainer1`**: The main navigation interface for the app.
+*   **`royalty_table`**: Displays the main royalty data.
+*   **`adjustment`**: A table widget for managing royalty adjustments.
+*   **`create_sales_modal` / `update_sales_modal`**: Modals used for CRUD operations on sales data.
 
-## Inferences
-*   **Data Integrity:** It is inferred that the `version_id` column in various tables (e.g., `royalty_adjustment`, `sales`) is used for optimistic locking or audit history, as the app frequently increments this value during updates.
-*   **Database Schema:** Based on the queries, the database appears to rely on views (e.g., `v_all_transactions`, `v_all_royalty_adjustment`) to abstract complex joins between `licensor`, `contract`, `game_title`, and `sales` tables.
+## Database Schema (Inferred)
+*Based on the SQL queries, the following tables are utilized:*
+
+*   **`licensor`**: `licensor_id`, `licensor_name`
+*   **`contract`**: `contract_id`, `licensor_id`, `mg_beginning_balance`, `pp_beginning_balance`, `contract_name`, `effective_start_date`
+*   **`sales`**: `child_item_id`, `order_date`, `sold_quantity`, `sales`, `manufactured_quantity`, `discount`, `version_id`
+*   **`royalty_adjustment`**: `child_item_id`, `adjustment_date`, `royalty_adjustment`, `adjustment_note`, `version_id`
+*   **`monthly_royalty`**: Stores calculated monthly royalty data.
+*   **`monthly_royalty_status`**: Tracks whether a month is closed (`status = 1`).
+*   **`account`**: Stores GL account information.
 
 ## Appendix: Inventory
 
-### Major Queries
-| Query Name | Responsibility |
-| :--- | :--- |
-| `get_all_items` | Fetches primary transaction data for the main table. |
-| `calc_current_mg_balance` | Calculates MG balances for contracts. |
-| `insert_monthly_royalty` | Persists calculated royalty data to the database. |
-| `get_sales` | Retrieves sales data for the Sales tab. |
-| `update_royalty_adjustment` | Updates existing adjustment records. |
-
-### JavaScript Logic Blocks
-| Block Name | Role |
-| :--- | :--- |
-| `calculateMGBalance` | Aggregates royalty and adjustment data to compute MG status. |
-| `exportReport` | Generates and downloads Excel reports using `ExcelJS`. |
-| `transfer_licensors` | Manages contract migration between licensors. |
-| `delete_record_transform` | Validates and executes record deletion. |
-
-### Important Widgets
-| Widget Name | Interaction |
-| :--- | :--- |
-| `tabbedContainer1` | Main navigation between functional modules. |
-| `royalty_table` | Main data display; supports row selection and editing. |
-| `delete_modal` | Safety gate for record deletion. |
-| `start_date` / `end_date` | Global date filters for data retrieval. |
+| Component | Name | Responsibility |
+| :--- | :--- | :--- |
+| **Query** | `calc_current_mg_balance` | Calculates MG balances for contracts. |
+| **Query** | `get_sales` | Fetches sales data for a date range. |
+| **Query** | `insert_monthly_royalty` | Performs bulk insert of monthly royalty records. |
+| **JS Block** | `calculateMGBalance` | Orchestrates royalty and MG balance logic. |
+| **JS Block** | `create_report` | Generates Excel reports using `ExcelJS`. |
+| **Widget** | `tabbedContainer1` | Main app navigation. |
+| **Widget** | `royalty_table` | Displays primary royalty data. |
 
 ## Risks and Open Questions
-*   **Performance:** The `calc_current_mg_balance` query is highly complex with multiple subqueries. As the dataset grows, this may lead to timeouts or performance degradation.
-*   **Data Consistency:** The app relies on `isClosedMonthStatus` to determine logic paths. If the status in `monthly_royalty_status` is not updated correctly, the calculation logic may produce incorrect results.
-*   **Dependency:** The `exportReport` function relies on an external library (`ExcelJS`). If the CDN link is broken or the library API changes, report generation will fail.
-*   **Hardcoded Logic:** Several queries contain hardcoded logic (e.g., `systemStartDate = '2022-07-01'`), which may require manual updates in the future.
+*   **Data Integrity:** The `transfer_licensors` query uses `set foreign_key_checks = 0`. This is a high-risk operation that could lead to orphaned records if not managed carefully.
+*   **Complexity:** The `calc_current_mg_balance` query is extremely long and contains multiple subqueries. This makes it difficult to maintain and debug.
+*   **Performance:** The `create_report` function performs multiple asynchronous calls within a loop. Depending on the number of months selected, this could lead to browser performance issues or timeouts.
+*   **Ambiguity:** The `sales` table schema is inferred from multiple joins; the exact relationship between `parent_item`, `child_item`, and `sales` is complex and relies on effective date ranges.

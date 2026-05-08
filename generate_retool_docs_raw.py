@@ -16,6 +16,9 @@ from urllib.parse import unquote
 
 DEFAULT_MODEL = "gemini-2.5-flash-lite"
 DEFAULT_OUTPUT_DIR = "output"
+DEFAULT_PROMPT_PATH = (
+    Path(__file__).resolve().parent / "prompts" / "retool_doc_raw_prompt.md"
+).resolve()
 RETRY_DELAY_PATTERN = re.compile(r"Please retry in ([0-9.]+)s", re.IGNORECASE)
 MAX_429_RETRIES = 6
 DEFAULT_429_DELAY_SECONDS = 30.0
@@ -91,15 +94,13 @@ def load_config(config_path: Path) -> AppConfig:
 
     base_dir = config_path.parent
     input_path = resolve_relative_path(base_dir, raw.get("input_path"))
-    prompt_path = resolve_relative_path(base_dir, raw.get("prompt_path"))
+    prompt_path = DEFAULT_PROMPT_PATH
     output_dir = resolve_relative_path(base_dir, raw.get("output_dir", DEFAULT_OUTPUT_DIR))
     model = str(raw.get("model", DEFAULT_MODEL)).strip() or DEFAULT_MODEL
     gemini_api_key = str(raw.get("gemini_api_key", "")).strip() or None
 
     if input_path is None:
         raise ConfigError("Config is missing required field: input_path")
-    if prompt_path is None:
-        raise ConfigError("Config is missing required field: prompt_path")
     if not input_path.is_file():
         raise ConfigError(f"Source file was not found: {input_path}")
     if not prompt_path.is_file():
