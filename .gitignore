@@ -1,1 +1,4 @@
 config.json
+DBconfig.json
+__pycache__/
+*.pyc
