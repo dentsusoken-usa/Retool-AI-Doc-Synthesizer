@@ -1,0 +1,5349 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>NISA Production Sync Database Schema</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 10pt;
+      color: #111827;
+      line-height: 1.45;
+      margin: 18px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1, h2, h3, h4 {
+      color: #0f172a;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+    p, li {
+      margin-bottom: 6px;
+    }
+    code {
+      font-family: Courier, monospace;
+      font-size: 9pt;
+      background: #f3f4f6;
+      padding: 1px 3px;
+    }
+    pre {
+      font-family: Courier, monospace;
+      font-size: 9pt;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      padding: 8px;
+      white-space: pre-wrap;
+    }
+    .mermaid {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0 20px;
+      overflow: visible;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 7.5pt;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 4px;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    th {
+      background: #dbeafe;
+      text-align: left;
+    }
+    th:nth-child(1), td:nth-child(1) { width: 3%; }
+    th:nth-child(2), td:nth-child(2) { width: 12%; }
+    th:nth-child(3), td:nth-child(3) { width: 12%; }
+    th:nth-child(4), td:nth-child(4) { width: 8%; }
+    th:nth-child(5), td:nth-child(5) { width: 9%; }
+    th:nth-child(6), td:nth-child(6) { width: 4%; text-align: center; }
+    th:nth-child(7), td:nth-child(7) { width: 14%; }
+    th:nth-child(8), td:nth-child(8) { width: 5%; text-align: center; }
+    th:nth-child(9), td:nth-child(9) { width: 8%; }
+    th:nth-child(10), td:nth-child(10) { width: 25%; }
+    h2, h3, table, .mermaid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  </style>
+  <script type="module">
+    window.__MERMAID_RENDER_DONE = false;
+    window.__MERMAID_RENDER_ERROR = null;
+
+    try {
+      const mermaidModule = await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+      const mermaid = mermaidModule.default;
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        theme: "default"
+      });
+      await mermaid.run({ querySelector: ".mermaid" });
+    } catch (error) {
+      window.__MERMAID_RENDER_ERROR = String(error);
+      console.error("Mermaid render failed:", error);
+    } finally {
+      window.__MERMAID_RENDER_DONE = true;
+    }
+  </script>
+</head>
+<body>
+<h1>NISA Production Sync Database Schema</h1>
+<p>Schema definition for the NISA production synchronization database.</p>
+<h2>Schema Overview</h2>
+<ul>
+<li>Database: <code>nisa_prod_sync</code></li>
+<li>Tables documented: 25</li>
+<li>Relationships documented: 27</li>
+</ul>
+<h2>ERD</h2>
+<div class="mermaid">erDiagram
+    account {
+        INT account_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR account_name
+        VARCHAR type
+        VARCHAR currency
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    account_history {
+        INT account_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR account_name
+        VARCHAR type
+        VARCHAR currency
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    child_item {
+        INT child_item_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR child_item_code
+        VARCHAR child_item_name
+        INT parent_item_id FK
+        VARCHAR royalty_type
+        DECIMAL royalty_per_unit
+        DECIMAL royalty_percentage
+        DECIMAL unit_price
+        DECIMAL msrp
+        INT sales_account_id FK
+        VARCHAR game_type
+        INT platform_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    child_item_history {
+        INT child_item_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR child_item_code
+        VARCHAR child_item_name
+        INT parent_item_id FK
+        VARCHAR royalty_type
+        DECIMAL royalty_per_unit
+        DECIMAL royalty_percentage
+        DECIMAL unit_price
+        DECIMAL msrp
+        INT sales_account_id FK
+        VARCHAR game_type
+        INT platform_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    contract {
+        INT contract_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR contract_name
+        DECIMAL mg_beginning_balance
+        DECIMAL pp_beginning_balance
+        DECIMAL mg_original_paid
+        INT licensor_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    contract_history {
+        INT contract_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR contract_name
+        DECIMAL mg_beginning_balance
+        DECIMAL pp_beginning_balance
+        DECIMAL mg_original_paid
+        INT licensor_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    division {
+        INT division_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR division_name
+        INT debit_account_id FK
+        INT credit_account_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    division_history {
+        INT division_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR division_name
+        INT debit_account_id FK
+        INT credit_account_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    game_title {
+        INT game_title_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR game_title
+        DATE release_date
+        INT contract_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    game_title_history {
+        INT game_title_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR game_title
+        DATE release_date
+        INT contract_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    journal_entry_template {
+        INT template_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR template_name
+        INT debit_account_id FK
+        INT credit_account_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    journal_entry_template_history {
+        INT template_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR template_name
+        INT debit_account_id FK
+        INT credit_account_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    licensor {
+        INT licensor_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR licensor_name
+        VARCHAR mg_balance_calculation_type
+        VARCHAR royalty_calculation_type
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    licensor_history {
+        INT licensor_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR licensor_name
+        VARCHAR mg_balance_calculation_type
+        VARCHAR royalty_calculation_type
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    monthly_royalty {
+        INT licensor_id
+        DATE licensor_effective_start_date
+        DATE licensor_effective_end_date
+        INT licensor_version_id
+        VARCHAR licensor_name
+        VARCHAR mg_balance_calculation_type
+        VARCHAR royalty_calculation_type
+        INT contract_id
+        DATE contract_effective_start_date
+        DATE contract_effective_end_date
+        INT contract_version_id
+        VARCHAR contract_name
+        DECIMAL mg_beginning_balance
+        DECIMAL pp_beginning_balance
+        DECIMAL mg_original_paid
+        INT game_title_id
+        DATE game_title_effective_start_date
+        DATE game_title_effective_end_date
+        INT game_title_version_id
+        VARCHAR game_title
+        DATE release_date
+        INT parent_item_id
+        DATE parent_item_effective_start_date
+        DATE parent_item_effective_end_date
+        INT parent_item_version_id
+        VARCHAR parent_item_code
+        VARCHAR parent_item_name
+        VARCHAR parent_item_type
+        INT division_id
+        DATE division_effective_start_date
+        DATE division_effective_end_date
+        INT division_version_id
+        VARCHAR division_name
+        INT debit_account_id
+        DATE debit_account_effective_start_date
+        DATE debit_account_effective_end_date
+        INT debit_account_version_id
+        VARCHAR debit_account_name
+        VARCHAR debit_account_type
+        INT credit_account_id
+        DATE credit_account_effective_start_date
+        DATE credit_account_effective_end_date
+        INT credit_account_version_id
+        VARCHAR credit_account_name
+        VARCHAR credit_account_type
+        INT child_item_id PK
+        DATE child_item_effective_start_date
+        DATE child_item_effective_end_date
+        INT child_item_version_id
+        VARCHAR child_item_code
+        VARCHAR child_item_name
+        VARCHAR royalty_type
+        DECIMAL royalty_per_unit
+        DECIMAL royalty_percentage
+        DECIMAL unit_price
+        DECIMAL msrp
+        INT sales_account_id
+        DATE sales_account_effective_start_date
+        DATE sales_account_effective_end_date
+        INT sales_account_version_id
+        VARCHAR sales_account_name
+        VARCHAR sales_account_type
+        VARCHAR game_type
+        INT platform_id
+        DATE platform_effective_start_date
+        DATE platform_effective_end_date
+        INT platform_version_id
+        VARCHAR platform_code
+        VARCHAR platform_name
+        DATE order_date PK
+        INT sales_version_id PK
+        INT sold_quantity
+        DECIMAL sales
+        INT manufactured_quantity
+        DECIMAL discount
+        DECIMAL royalty_due
+    }
+    monthly_royalty_status {
+        INT status_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        TINYINT status
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    monthly_royalty_status_history {
+        INT status_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        TINYINT status
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    parent_item {
+        INT parent_item_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR parent_item_code
+        VARCHAR parent_item_name
+        VARCHAR parent_item_type
+        INT division_id FK
+        INT game_title_id FK
+        INT journal_entry_template_id FK
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    parent_item_history {
+        INT parent_item_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR parent_item_code
+        VARCHAR parent_item_name
+        VARCHAR parent_item_type
+        INT division_id FK
+        INT game_title_id FK
+        INT journal_entry_template_id
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    platform {
+        INT platform_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR platform_code
+        VARCHAR platform_name
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    platform_history {
+        INT platform_id PK
+        DATE effective_start_date PK
+        DATE effective_end_date PK
+        INT version_id PK
+        VARCHAR platform_code
+        VARCHAR platform_name
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    royalty_adjustment {
+        INT child_item_id PK FK
+        DATE adjustment_date PK
+        INT version_id PK
+        DECIMAL royalty_adjustment
+        VARCHAR adjustment_note
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    royalty_adjustment_history {
+        INT child_item_id PK FK
+        DATE adjustment_date PK
+        INT version_id PK
+        DECIMAL royalty_adjustment
+        VARCHAR adjustment_note
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    sales {
+        INT child_item_id PK FK
+        DATE order_date PK
+        INT version_id PK
+        INT sold_quantity
+        DECIMAL sales
+        INT manufactured_quantity
+        DECIMAL discount
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    sales_history {
+        INT child_item_id PK FK
+        DATE order_date PK
+        INT version_id PK
+        INT sold_quantity
+        DECIMAL sales
+        INT manufactured_quantity
+        DECIMAL discount
+        TIMESTAMP created_timestamp
+        VARCHAR created_by
+        TIMESTAMP updated_timestamp
+        VARCHAR updated_by
+    }
+    parent_item ||--o{ child_item : "parent_item_id -> parent_item_id"
+    account ||--o{ child_item : "sales_account_id -> account_id"
+    platform ||--o{ child_item : "platform_id -> platform_id"
+    parent_item ||--o{ child_item_history : "parent_item_id -> parent_item_id"
+    account ||--o{ child_item_history : "sales_account_id -> account_id"
+    platform ||--o{ child_item_history : "platform_id -> platform_id"
+    licensor ||--o{ contract : "licensor_id -> licensor_id"
+    licensor ||--o{ contract_history : "licensor_id -> licensor_id"
+    account ||--o{ division : "debit_account_id -> account_id"
+    account ||--o{ division : "credit_account_id -> account_id"
+    account ||--o{ division_history : "debit_account_id -> account_id"
+    account ||--o{ division_history : "credit_account_id -> account_id"
+    contract ||--o{ game_title : "contract_id -> contract_id"
+    contract ||--o{ game_title_history : "contract_id -> contract_id"
+    account ||--o{ journal_entry_template : "debit_account_id -> account_id"
+    account ||--o{ journal_entry_template : "credit_account_id -> account_id"
+    account ||--o{ journal_entry_template_history : "debit_account_id -> account_id"
+    account ||--o{ journal_entry_template_history : "credit_account_id -> account_id"
+    game_title ||--o{ parent_item : "game_title_id -> game_title_id"
+    division ||--o{ parent_item : "division_id -> division_id"
+    journal_entry_template ||--o{ parent_item : "journal_entry_template_id -> template_id"
+    game_title ||--o{ parent_item_history : "game_title_id -> game_title_id"
+    division ||--o{ parent_item_history : "division_id -> division_id"
+    child_item ||--o{ royalty_adjustment : "child_item_id -> child_item_id"
+    child_item ||--o{ royalty_adjustment_history : "child_item_id -> child_item_id"
+    child_item ||--o{ sales : "child_item_id -> child_item_id"
+    child_item ||--o{ sales_history : "child_item_id -> child_item_id"</div>
+<h2>account</h2>
+<p><strong>Logical Name:</strong> Account</p>
+<p>Stores information about accounts.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>account_id</td>
+<td>Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the account.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>account_name</td>
+<td>Account Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The name of the account.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>type</td>
+<td>Account Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The type of the account (e.g., 'Customer', 'Vendor').</td>
+</tr>
+<tr>
+<td>7</td>
+<td>currency</td>
+<td>Currency</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The currency associated with the account.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>account_history</h2>
+<p><strong>Logical Name:</strong> Account History</p>
+<p>Stores historical versions of account information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>account_id</td>
+<td>Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the account.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>account_name</td>
+<td>Account Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The name of the account.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>type</td>
+<td>Account Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The type of the account (e.g., 'Customer', 'Vendor').</td>
+</tr>
+<tr>
+<td>7</td>
+<td>currency</td>
+<td>Currency</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The currency associated with the account.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>child_item</h2>
+<p><strong>Logical Name:</strong> Child Item</p>
+<p>Represents individual items or SKUs that are part of a larger parent item.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the child item.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>child_item_code</td>
+<td>Child Item Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique code for the child item.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>child_item_name</td>
+<td>Child Item Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the child item.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>parent_item_id</td>
+<td>Parent Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>parent_item.parent_item_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the parent item.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>royalty_type</td>
+<td>Royalty Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of royalty calculation (e.g., 'Percentage', 'Per Unit').</td>
+</tr>
+<tr>
+<td>9</td>
+<td>royalty_per_unit</td>
+<td>Royalty Per Unit</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The royalty amount per unit sold.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>royalty_percentage</td>
+<td>Royalty Percentage</td>
+<td>DECIMAL</td>
+<td>15,5</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The royalty percentage applied to sales.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>unit_price</td>
+<td>Unit Price</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The price of a single unit of the child item.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>msrp</td>
+<td>MSRP</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Manufacturer's Suggested Retail Price.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>sales_account_id</td>
+<td>Sales Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the account responsible for sales.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>game_type</td>
+<td>Game Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The type of game this item belongs to.</td>
+</tr>
+<tr>
+<td>15</td>
+<td>platform_id</td>
+<td>Platform ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>platform.platform_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the platform this item is for.</td>
+</tr>
+<tr>
+<td>16</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>17</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>18</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>19</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>child_item_history</h2>
+<p><strong>Logical Name:</strong> Child Item History</p>
+<p>Stores historical versions of child item information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the child item.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>child_item_code</td>
+<td>Child Item Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique code for the child item.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>child_item_name</td>
+<td>Child Item Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the child item.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>parent_item_id</td>
+<td>Parent Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>parent_item.parent_item_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the parent item.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>royalty_type</td>
+<td>Royalty Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of royalty calculation (e.g., 'Percentage', 'Per Unit').</td>
+</tr>
+<tr>
+<td>9</td>
+<td>royalty_per_unit</td>
+<td>Royalty Per Unit</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The royalty amount per unit sold.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>royalty_percentage</td>
+<td>Royalty Percentage</td>
+<td>DECIMAL</td>
+<td>15,5</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The royalty percentage applied to sales.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>unit_price</td>
+<td>Unit Price</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The price of a single unit of the child item.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>msrp</td>
+<td>MSRP</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Manufacturer's Suggested Retail Price.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>sales_account_id</td>
+<td>Sales Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the account responsible for sales.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>game_type</td>
+<td>Game Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The type of game this item belongs to.</td>
+</tr>
+<tr>
+<td>15</td>
+<td>platform_id</td>
+<td>Platform ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>platform.platform_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the platform this item is for.</td>
+</tr>
+<tr>
+<td>16</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>17</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>18</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>19</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>contract</h2>
+<p><strong>Logical Name:</strong> Contract</p>
+<p>Stores information about contracts with licensors.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>contract_id</td>
+<td>Contract ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the contract.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>contract_name</td>
+<td>Contract Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the contract.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>mg_beginning_balance</td>
+<td>MG Beginning Balance</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Minimum Guarantee beginning balance for the contract.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>pp_beginning_balance</td>
+<td>PP Beginning Balance</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Per-Product beginning balance for the contract.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>mg_original_paid</td>
+<td>MG Original Paid</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Original amount paid for the Minimum Guarantee.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>licensor_id</td>
+<td>Licensor ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>licensor.licensor_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the licensor.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>contract_history</h2>
+<p><strong>Logical Name:</strong> Contract History</p>
+<p>Stores historical versions of contract information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>contract_id</td>
+<td>Contract ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the contract.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>contract_name</td>
+<td>Contract Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the contract.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>mg_beginning_balance</td>
+<td>MG Beginning Balance</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Minimum Guarantee beginning balance for the contract.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>pp_beginning_balance</td>
+<td>PP Beginning Balance</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Per-Product beginning balance for the contract.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>mg_original_paid</td>
+<td>MG Original Paid</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Original amount paid for the Minimum Guarantee.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>licensor_id</td>
+<td>Licensor ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>licensor.licensor_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the licensor.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>division</h2>
+<p><strong>Logical Name:</strong> Division</p>
+<p>Represents business divisions within the company.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>division_id</td>
+<td>Division ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the division.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>division_name</td>
+<td>Division Name</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The name of the division.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>debit_account_id</td>
+<td>Debit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default debit account for the division.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>credit_account_id</td>
+<td>Credit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default credit account for the division.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>division_history</h2>
+<p><strong>Logical Name:</strong> Division History</p>
+<p>Stores historical versions of division information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>division_id</td>
+<td>Division ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the division.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>division_name</td>
+<td>Division Name</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The name of the division.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>debit_account_id</td>
+<td>Debit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default debit account for the division.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>credit_account_id</td>
+<td>Credit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default credit account for the division.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>game_title</h2>
+<p><strong>Logical Name:</strong> Game Title</p>
+<p>Stores information about game titles.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>game_title_id</td>
+<td>Game Title ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the game title.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>game_title</td>
+<td>Game Title</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the game title.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>release_date</td>
+<td>Release Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The release date of the game title.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>contract_id</td>
+<td>Contract ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>contract.contract_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the contract associated with this game title.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>game_title_history</h2>
+<p><strong>Logical Name:</strong> Game Title History</p>
+<p>Stores historical versions of game title information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>game_title_id</td>
+<td>Game Title ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the game title.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>game_title</td>
+<td>Game Title</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the game title.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>release_date</td>
+<td>Release Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The release date of the game title.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>contract_id</td>
+<td>Contract ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>contract.contract_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the contract associated with this game title.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>journal_entry_template</h2>
+<p><strong>Logical Name:</strong> Journal Entry Template</p>
+<p>Defines templates for generating journal entries.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>template_id</td>
+<td>Template ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the journal entry template.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>template_name</td>
+<td>Template Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the journal entry template.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>debit_account_id</td>
+<td>Debit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default debit account for this template.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>credit_account_id</td>
+<td>Credit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default credit account for this template.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>journal_entry_template_history</h2>
+<p><strong>Logical Name:</strong> Journal Entry Template History</p>
+<p>Stores historical versions of journal entry template information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>template_id</td>
+<td>Template ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the journal entry template.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>template_name</td>
+<td>Template Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the journal entry template.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>debit_account_id</td>
+<td>Debit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default debit account for this template.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>credit_account_id</td>
+<td>Credit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>account.account_id</td>
+<td>N</td>
+<td></td>
+<td>Foreign key referencing the default credit account for this template.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>licensor</h2>
+<p><strong>Logical Name:</strong> Licensor</p>
+<p>Stores information about licensors.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>licensor_id</td>
+<td>Licensor ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the licensor.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>licensor_name</td>
+<td>Licensor Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the licensor.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>mg_balance_calculation_type</td>
+<td>MG Balance Calculation Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Specifies how the Minimum Guarantee balance is calculated.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>royalty_calculation_type</td>
+<td>Royalty Calculation Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Specifies the method for calculating royalties.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>licensor_history</h2>
+<p><strong>Logical Name:</strong> Licensor History</p>
+<p>Stores historical versions of licensor information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>licensor_id</td>
+<td>Licensor ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the licensor.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>licensor_name</td>
+<td>Licensor Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the licensor.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>mg_balance_calculation_type</td>
+<td>MG Balance Calculation Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Specifies how the Minimum Guarantee balance is calculated.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>royalty_calculation_type</td>
+<td>Royalty Calculation Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Specifies the method for calculating royalties.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>monthly_royalty</h2>
+<p><strong>Logical Name:</strong> Monthly Royalty</p>
+<p>Aggregated monthly royalty data, linking various entities.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>licensor_id</td>
+<td>Licensor ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the licensor.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>licensor_effective_start_date</td>
+<td>Licensor Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the licensor record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>licensor_effective_end_date</td>
+<td>Licensor Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the licensor record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>licensor_version_id</td>
+<td>Licensor Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the licensor record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>licensor_name</td>
+<td>Licensor Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the licensor.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>mg_balance_calculation_type</td>
+<td>MG Balance Calculation Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of calculation for Minimum Guarantee balance.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>royalty_calculation_type</td>
+<td>Royalty Calculation Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of calculation for royalties.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>contract_id</td>
+<td>Contract ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the contract.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>contract_effective_start_date</td>
+<td>Contract Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the contract record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>contract_effective_end_date</td>
+<td>Contract Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the contract record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>contract_version_id</td>
+<td>Contract Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the contract record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>contract_name</td>
+<td>Contract Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the contract.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>mg_beginning_balance</td>
+<td>MG Beginning Balance</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Minimum Guarantee beginning balance for the contract.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>pp_beginning_balance</td>
+<td>PP Beginning Balance</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Per-Product beginning balance for the contract.</td>
+</tr>
+<tr>
+<td>15</td>
+<td>mg_original_paid</td>
+<td>MG Original Paid</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Original amount paid for the Minimum Guarantee.</td>
+</tr>
+<tr>
+<td>16</td>
+<td>game_title_id</td>
+<td>Game Title ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the game title.</td>
+</tr>
+<tr>
+<td>17</td>
+<td>game_title_effective_start_date</td>
+<td>Game Title Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the game title record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>18</td>
+<td>game_title_effective_end_date</td>
+<td>Game Title Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the game title record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>19</td>
+<td>game_title_version_id</td>
+<td>Game Title Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the game title record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>20</td>
+<td>game_title</td>
+<td>Game Title</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the game title.</td>
+</tr>
+<tr>
+<td>21</td>
+<td>release_date</td>
+<td>Release Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Release date of the game title.</td>
+</tr>
+<tr>
+<td>22</td>
+<td>parent_item_id</td>
+<td>Parent Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the parent item.</td>
+</tr>
+<tr>
+<td>23</td>
+<td>parent_item_effective_start_date</td>
+<td>Parent Item Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the parent item record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>24</td>
+<td>parent_item_effective_end_date</td>
+<td>Parent Item Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the parent item record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>25</td>
+<td>parent_item_version_id</td>
+<td>Parent Item Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the parent item record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>26</td>
+<td>parent_item_code</td>
+<td>Parent Item Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Code of the parent item.</td>
+</tr>
+<tr>
+<td>27</td>
+<td>parent_item_name</td>
+<td>Parent Item Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the parent item.</td>
+</tr>
+<tr>
+<td>28</td>
+<td>parent_item_type</td>
+<td>Parent Item Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of the parent item.</td>
+</tr>
+<tr>
+<td>29</td>
+<td>division_id</td>
+<td>Division ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the division.</td>
+</tr>
+<tr>
+<td>30</td>
+<td>division_effective_start_date</td>
+<td>Division Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the division record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>31</td>
+<td>division_effective_end_date</td>
+<td>Division Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the division record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>32</td>
+<td>division_version_id</td>
+<td>Division Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the division record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>33</td>
+<td>division_name</td>
+<td>Division Name</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Name of the division.</td>
+</tr>
+<tr>
+<td>34</td>
+<td>debit_account_id</td>
+<td>Debit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Identifier for the debit account.</td>
+</tr>
+<tr>
+<td>35</td>
+<td>debit_account_effective_start_date</td>
+<td>Debit Account Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the debit account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>36</td>
+<td>debit_account_effective_end_date</td>
+<td>Debit Account Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the debit account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>37</td>
+<td>debit_account_version_id</td>
+<td>Debit Account Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the debit account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>38</td>
+<td>debit_account_name</td>
+<td>Debit Account Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Name of the debit account.</td>
+</tr>
+<tr>
+<td>39</td>
+<td>debit_account_type</td>
+<td>Debit Account Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Type of the debit account.</td>
+</tr>
+<tr>
+<td>40</td>
+<td>credit_account_id</td>
+<td>Credit Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Identifier for the credit account.</td>
+</tr>
+<tr>
+<td>41</td>
+<td>credit_account_effective_start_date</td>
+<td>Credit Account Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the credit account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>42</td>
+<td>credit_account_effective_end_date</td>
+<td>Credit Account Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the credit account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>43</td>
+<td>credit_account_version_id</td>
+<td>Credit Account Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the credit account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>44</td>
+<td>credit_account_name</td>
+<td>Credit Account Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Name of the credit account.</td>
+</tr>
+<tr>
+<td>45</td>
+<td>credit_account_type</td>
+<td>Credit Account Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Type of the credit account.</td>
+</tr>
+<tr>
+<td>46</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the child item.</td>
+</tr>
+<tr>
+<td>47</td>
+<td>child_item_effective_start_date</td>
+<td>Child Item Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the child item record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>48</td>
+<td>child_item_effective_end_date</td>
+<td>Child Item Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the child item record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>49</td>
+<td>child_item_version_id</td>
+<td>Child Item Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the child item record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>50</td>
+<td>child_item_code</td>
+<td>Child Item Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Code of the child item.</td>
+</tr>
+<tr>
+<td>51</td>
+<td>child_item_name</td>
+<td>Child Item Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the child item.</td>
+</tr>
+<tr>
+<td>52</td>
+<td>royalty_type</td>
+<td>Royalty Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of royalty calculation.</td>
+</tr>
+<tr>
+<td>53</td>
+<td>royalty_per_unit</td>
+<td>Royalty Per Unit</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Royalty amount per unit.</td>
+</tr>
+<tr>
+<td>54</td>
+<td>royalty_percentage</td>
+<td>Royalty Percentage</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Royalty percentage.</td>
+</tr>
+<tr>
+<td>55</td>
+<td>unit_price</td>
+<td>Unit Price</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Price per unit.</td>
+</tr>
+<tr>
+<td>56</td>
+<td>msrp</td>
+<td>MSRP</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Manufacturer's Suggested Retail Price.</td>
+</tr>
+<tr>
+<td>57</td>
+<td>sales_account_id</td>
+<td>Sales Account ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the sales account.</td>
+</tr>
+<tr>
+<td>58</td>
+<td>sales_account_effective_start_date</td>
+<td>Sales Account Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the sales account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>59</td>
+<td>sales_account_effective_end_date</td>
+<td>Sales Account Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the sales account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>60</td>
+<td>sales_account_version_id</td>
+<td>Sales Account Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the sales account record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>61</td>
+<td>sales_account_name</td>
+<td>Sales Account Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Name of the sales account.</td>
+</tr>
+<tr>
+<td>62</td>
+<td>sales_account_type</td>
+<td>Sales Account Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Type of the sales account.</td>
+</tr>
+<tr>
+<td>63</td>
+<td>game_type</td>
+<td>Game Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of the game.</td>
+</tr>
+<tr>
+<td>64</td>
+<td>platform_id</td>
+<td>Platform ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the platform.</td>
+</tr>
+<tr>
+<td>65</td>
+<td>platform_effective_start_date</td>
+<td>Platform Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective start date of the platform record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>66</td>
+<td>platform_effective_end_date</td>
+<td>Platform Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The effective end date of the platform record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>67</td>
+<td>platform_version_id</td>
+<td>Platform Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the platform record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>68</td>
+<td>platform_code</td>
+<td>Platform Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Code of the platform.</td>
+</tr>
+<tr>
+<td>69</td>
+<td>platform_name</td>
+<td>Platform Name</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the platform.</td>
+</tr>
+<tr>
+<td>70</td>
+<td>order_date</td>
+<td>Order Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The date of the order.</td>
+</tr>
+<tr>
+<td>71</td>
+<td>sales_version_id</td>
+<td>Sales Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The version ID of the sales record at the time of aggregation.</td>
+</tr>
+<tr>
+<td>72</td>
+<td>sold_quantity</td>
+<td>Sold Quantity</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Quantity of items sold.</td>
+</tr>
+<tr>
+<td>73</td>
+<td>sales</td>
+<td>Sales</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Total sales amount.</td>
+</tr>
+<tr>
+<td>74</td>
+<td>manufactured_quantity</td>
+<td>Manufactured Quantity</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Quantity of items manufactured.</td>
+</tr>
+<tr>
+<td>75</td>
+<td>discount</td>
+<td>Discount</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Discount applied to the sales.</td>
+</tr>
+<tr>
+<td>76</td>
+<td>royalty_due</td>
+<td>Royalty Due</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The calculated royalty amount due.</td>
+</tr>
+</tbody>
+</table>
+<h2>monthly_royalty_status</h2>
+<p><strong>Logical Name:</strong> Monthly Royalty Status</p>
+<p>Tracks the status of monthly royalty calculations.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>status_id</td>
+<td>Status ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the status record.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>status</td>
+<td>Status</td>
+<td>TINYINT</td>
+<td>3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The status code (e.g., 0 for pending, 1 for processed).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>monthly_royalty_status_history</h2>
+<p><strong>Logical Name:</strong> Monthly Royalty Status History</p>
+<p>Stores historical versions of monthly royalty status.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>status_id</td>
+<td>Status ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the status record.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>status</td>
+<td>Status</td>
+<td>TINYINT</td>
+<td>3</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The status code (e.g., 0 for pending, 1 for processed).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>parent_item</h2>
+<p><strong>Logical Name:</strong> Parent Item</p>
+<p>Represents a collection or bundle of child items.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>parent_item_id</td>
+<td>Parent Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the parent item.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>parent_item_code</td>
+<td>Parent Item Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique code for the parent item.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>parent_item_name</td>
+<td>Parent Item Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the parent item.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>parent_item_type</td>
+<td>Parent Item Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of the parent item (e.g., 'Bundle', 'Collection').</td>
+</tr>
+<tr>
+<td>8</td>
+<td>division_id</td>
+<td>Division ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>division.division_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the division this parent item belongs to.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>game_title_id</td>
+<td>Game Title ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>game_title.game_title_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the game title associated with this parent item.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>journal_entry_template_id</td>
+<td>Journal Entry Template ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>journal_entry_template.template_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the journal entry template used for this parent item.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>parent_item_history</h2>
+<p><strong>Logical Name:</strong> Parent Item History</p>
+<p>Stores historical versions of parent item information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>parent_item_id</td>
+<td>Parent Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the parent item.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>parent_item_code</td>
+<td>Parent Item Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique code for the parent item.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>parent_item_name</td>
+<td>Parent Item Name</td>
+<td>VARCHAR</td>
+<td>300</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Name of the parent item.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>parent_item_type</td>
+<td>Parent Item Type</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Type of the parent item (e.g., 'Bundle', 'Collection').</td>
+</tr>
+<tr>
+<td>8</td>
+<td>division_id</td>
+<td>Division ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>division.division_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the division this parent item belongs to.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>game_title_id</td>
+<td>Game Title ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td>game_title.game_title_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the game title associated with this parent item.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>journal_entry_template_id</td>
+<td>Journal Entry Template ID</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the journal entry template used for this parent item.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>platform</h2>
+<p><strong>Logical Name:</strong> Platform</p>
+<p>Stores information about gaming platforms.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>platform_id</td>
+<td>Platform ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the platform.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>platform_code</td>
+<td>Platform Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique code for the platform.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>platform_name</td>
+<td>Platform Name</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the platform.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>platform_history</h2>
+<p><strong>Logical Name:</strong> Platform History</p>
+<p>Stores historical versions of platform information.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>platform_id</td>
+<td>Platform ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique identifier for the platform.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>effective_start_date</td>
+<td>Effective Start Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The start date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>effective_end_date</td>
+<td>Effective End Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The end date for which this historical record is effective.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>platform_code</td>
+<td>Platform Code</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique code for the platform.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>platform_name</td>
+<td>Platform Name</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The name of the platform.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>royalty_adjustment</h2>
+<p><strong>Logical Name:</strong> Royalty Adjustment</p>
+<p>Records adjustments made to royalties for a specific child item on a given date.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td>child_item.child_item_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the child item to which the adjustment applies.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>adjustment_date</td>
+<td>Adjustment Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The date on which the royalty adjustment was made.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>royalty_adjustment</td>
+<td>Royalty Adjustment</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The amount of the royalty adjustment. Can be positive or negative.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>adjustment_note</td>
+<td>Adjustment Note</td>
+<td>VARCHAR</td>
+<td>500</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>A note explaining the reason for the royalty adjustment.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>royalty_adjustment_history</h2>
+<p><strong>Logical Name:</strong> Royalty Adjustment History</p>
+<p>Stores historical versions of royalty adjustments.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td>child_item.child_item_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the child item to which the adjustment applies.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>adjustment_date</td>
+<td>Adjustment Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The date on which the royalty adjustment was made.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the record.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>royalty_adjustment</td>
+<td>Royalty Adjustment</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The amount of the royalty adjustment. Can be positive or negative.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>adjustment_note</td>
+<td>Adjustment Note</td>
+<td>VARCHAR</td>
+<td>500</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>A note explaining the reason for the royalty adjustment.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>sales</h2>
+<p><strong>Logical Name:</strong> Sales</p>
+<p>Records individual sales transactions for child items.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td>child_item.child_item_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the child item sold.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>order_date</td>
+<td>Order Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The date the order was placed.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the sales record.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sold_quantity</td>
+<td>Sold Quantity</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The number of units sold in this transaction.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>sales</td>
+<td>Sales</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The total sales amount for this transaction.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>manufactured_quantity</td>
+<td>Manufactured Quantity</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The quantity manufactured for this sale, if applicable.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>discount</td>
+<td>Discount</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The discount applied to this sale.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+<h2>sales_history</h2>
+<p><strong>Logical Name:</strong> Sales History</p>
+<p>Stores historical versions of sales transactions.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_item_id</td>
+<td>Child Item ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td>child_item.child_item_id</td>
+<td>Y</td>
+<td></td>
+<td>Foreign key referencing the child item sold.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>order_date</td>
+<td>Order Date</td>
+<td>DATE</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The date the order was placed.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>version_id</td>
+<td>Version ID</td>
+<td>INT</td>
+<td>10</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Identifier for the version of the sales record.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sold_quantity</td>
+<td>Sold Quantity</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The number of units sold in this transaction.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>sales</td>
+<td>Sales</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The total sales amount for this transaction.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>manufactured_quantity</td>
+<td>Manufactured Quantity</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>The quantity manufactured for this sale, if applicable.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>discount</td>
+<td>Discount</td>
+<td>DECIMAL</td>
+<td>15,3</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>The discount applied to this sale.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>created_timestamp</td>
+<td>Created Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who created the record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>updated_timestamp</td>
+<td>Updated Timestamp</td>
+<td>TIMESTAMP</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>N</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>100</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User who last updated the record.</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

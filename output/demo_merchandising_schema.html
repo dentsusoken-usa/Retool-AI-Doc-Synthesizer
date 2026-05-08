@@ -1,0 +1,403 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Demo Merchandising Schema Documentation</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 10pt;
+      color: #111827;
+      line-height: 1.45;
+      margin: 18px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1, h2, h3, h4 {
+      color: #0f172a;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+    p, li {
+      margin-bottom: 6px;
+    }
+    code {
+      font-family: Courier, monospace;
+      font-size: 9pt;
+      background: #f3f4f6;
+      padding: 1px 3px;
+    }
+    pre {
+      font-family: Courier, monospace;
+      font-size: 9pt;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      padding: 8px;
+      white-space: pre-wrap;
+    }
+    .mermaid {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0 20px;
+      overflow: visible;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 7.5pt;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 4px;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    th {
+      background: #dbeafe;
+      text-align: left;
+    }
+    th:nth-child(1), td:nth-child(1) { width: 3%; }
+    th:nth-child(2), td:nth-child(2) { width: 12%; }
+    th:nth-child(3), td:nth-child(3) { width: 12%; }
+    th:nth-child(4), td:nth-child(4) { width: 8%; }
+    th:nth-child(5), td:nth-child(5) { width: 9%; }
+    th:nth-child(6), td:nth-child(6) { width: 4%; text-align: center; }
+    th:nth-child(7), td:nth-child(7) { width: 14%; }
+    th:nth-child(8), td:nth-child(8) { width: 5%; text-align: center; }
+    th:nth-child(9), td:nth-child(9) { width: 8%; }
+    th:nth-child(10), td:nth-child(10) { width: 25%; }
+    h2, h3, table, .mermaid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  </style>
+  <script type="module">
+    window.__MERMAID_RENDER_DONE = false;
+    window.__MERMAID_RENDER_ERROR = null;
+
+    try {
+      const mermaidModule = await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+      const mermaid = mermaidModule.default;
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        theme: "default"
+      });
+      await mermaid.run({ querySelector: ".mermaid" });
+    } catch (error) {
+      window.__MERMAID_RENDER_ERROR = String(error);
+      console.error("Mermaid render failed:", error);
+    } finally {
+      window.__MERMAID_RENDER_DONE = true;
+    }
+  </script>
+</head>
+<body>
+<h1>Demo Merchandising Schema Documentation</h1>
+<p>This schema manages purchase order hierarchies, linking child purchase orders to parent definitions, while maintaining a master list of valid market codes.</p>
+<h2>Schema Overview</h2>
+<ul>
+<li>Database: <code>demo_merchandising</code></li>
+<li>Tables documented: 3</li>
+<li>Relationships documented: 2</li>
+</ul>
+<h2>ERD</h2>
+<div class="mermaid">erDiagram
+    parent_po_definition {
+        VARCHAR parent_po_no PK
+        VARCHAR season
+        VARCHAR market FK
+        DATETIME created_at
+        VARCHAR created_by
+        DATETIME updated_at
+        VARCHAR updated_by
+        BIGINT history_no
+        INT version_no
+        CHAR delete_flag
+    }
+    market_master {
+        VARCHAR market_code PK
+        VARCHAR market_name
+    }
+    child_po {
+        VARCHAR child_po_no PK
+        VARCHAR parent_po_no FK
+        VARCHAR vendor_code
+        DECIMAL po_amount
+    }
+    market_master ||--o{ parent_po_definition : "market -> market_code"
+    parent_po_definition ||--o{ child_po : "parent_po_no -> parent_po_no"</div>
+<h2>parent_po_definition</h2>
+<p><strong>Logical Name:</strong> Parent Purchase Order Definition</p>
+<p>Stores parent purchase order definitions used to group downstream purchase orders.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>parent_po_no</td>
+<td>Parent PO Number</td>
+<td>VARCHAR</td>
+<td>50</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Parent PO identifier. One parent PO can have multiple POs.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>season</td>
+<td>Season</td>
+<td>VARCHAR</td>
+<td>20</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Season of the PO (for example, HO25).</td>
+</tr>
+<tr>
+<td>3</td>
+<td>market</td>
+<td>Market Code</td>
+<td>VARCHAR</td>
+<td>200</td>
+<td>N</td>
+<td>market_master.market_code</td>
+<td>Y</td>
+<td></td>
+<td>Market code such as US, EMEA, or ROW.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>created_at</td>
+<td>Created Timestamp</td>
+<td>DATETIME</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was created.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>created_by</td>
+<td>Created By</td>
+<td>VARCHAR</td>
+<td>50</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User ID or process name that created the record.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>updated_at</td>
+<td>Updated Timestamp</td>
+<td>DATETIME</td>
+<td></td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Timestamp when the record was last updated.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>updated_by</td>
+<td>Updated By</td>
+<td>VARCHAR</td>
+<td>50</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>User ID or process name that last updated the record.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>history_no</td>
+<td>History Number</td>
+<td>BIGINT</td>
+<td>19</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Surrogate key for the history record.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>version_no</td>
+<td>Version Number</td>
+<td>INT</td>
+<td>10</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td>1</td>
+<td>Version sequence for the same parent PO record.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>delete_flag</td>
+<td>Delete Flag</td>
+<td>CHAR</td>
+<td>1</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td>0</td>
+<td>Logical delete flag. '0' active, '1' deleted.</td>
+</tr>
+</tbody>
+</table>
+<h2>market_master</h2>
+<p><strong>Logical Name:</strong> Market Master</p>
+<p>Master table for valid market codes.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>market_code</td>
+<td>Market Code</td>
+<td>VARCHAR</td>
+<td>200</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Unique market code.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>market_name</td>
+<td>Market Name</td>
+<td>VARCHAR</td>
+<td>200</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Business-readable market name.</td>
+</tr>
+</tbody>
+</table>
+<h2>child_po</h2>
+<p><strong>Logical Name:</strong> Child Purchase Order</p>
+<p>Child purchase orders linked to a parent PO definition.</p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Column Name (Physical)</th>
+<th>Column Name (Logical)</th>
+<th>Data Type</th>
+<th>Length/Precision</th>
+<th>PK</th>
+<th>FK Reference</th>
+<th>Not Null</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>child_po_no</td>
+<td>Child PO Number</td>
+<td>VARCHAR</td>
+<td>50</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Child PO identifier.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>parent_po_no</td>
+<td>Parent PO Number</td>
+<td>VARCHAR</td>
+<td>50</td>
+<td>N</td>
+<td>parent_po_definition.parent_po_no</td>
+<td>Y</td>
+<td></td>
+<td>Parent PO linked to this child PO.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>vendor_code</td>
+<td>Vendor Code</td>
+<td>VARCHAR</td>
+<td>50</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td></td>
+<td>Vendor code for the child PO.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>po_amount</td>
+<td>PO Amount</td>
+<td>DECIMAL</td>
+<td>12,2</td>
+<td>N</td>
+<td></td>
+<td>Y</td>
+<td>0.00</td>
+<td>Total amount of the purchase order.</td>
+</tr>
+</tbody>
+</table>
+<h2>Notes / Open Questions</h2>
+<ul>
+<li>The schema uses a soft-delete pattern via the 'delete_flag' column in the parent_po_definition table.</li>
+<li>The 'history_no' and 'version_no' columns in parent_po_definition suggest an audit or versioning tracking mechanism.</li>
+</ul>
+</body>
+</html>

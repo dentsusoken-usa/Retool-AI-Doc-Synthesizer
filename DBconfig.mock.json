@@ -1,0 +1,11 @@
+{
+  "mode": "mock",
+  "database": "demo_merchandising",
+  "mock_schema_path": "sourcecode/mock_mysql_schema.json",
+  "prompt_path": "prompts/db_schema_prompt.md",
+  "output_dir": "output",
+  "model": "gemini-3.1-flash-lite-preview",
+  "gemini_api_key": "AIzaSyBGTjRPK_t4wWEWxwX7_39a4M0U4DbbdBg",
+  "include_tables": [],
+  "exclude_tables": []
+}

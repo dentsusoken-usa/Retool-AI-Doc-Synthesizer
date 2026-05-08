@@ -82,10 +82,11 @@ class Gemini429Throttler:
 
 @dataclass
 class AppConfig:
-    host: str
-    port: int
-    user: str
-    password: str
+    mode: str
+    host: str | None
+    port: int | None
+    user: str | None
+    password: str | None
     database: str
     prompt_path: Path
     output_dir: Path
@@ -93,6 +94,7 @@ class AppConfig:
     gemini_api_key: str | None = None
     include_tables: list[str] | None = None
     exclude_tables: list[str] | None = None
+    mock_schema_path: Path | None = None
 
 
 def log(message: str) -> None:
@@ -117,14 +119,32 @@ def load_config(config_path: Path) -> AppConfig:
     output_dir = resolve_relative_path(base_dir, raw.get("output_dir", DEFAULT_OUTPUT_DIR))
     model = str(raw.get("model", DEFAULT_MODEL)).strip() or DEFAULT_MODEL
     gemini_api_key = str(raw.get("gemini_api_key", "")).strip() or None
+    mode = str(raw.get("mode", "mysql")).strip().lower() or "mysql"
+    if mode not in {"mysql", "mock"}:
+        raise ConfigError("Config field mode must be either 'mysql' or 'mock'.")
 
-    host = require_non_empty_string(raw, "host")
-    user = require_non_empty_string(raw, "user")
-    password = require_non_empty_string(raw, "password")
     database = require_non_empty_string(raw, "database")
-    port = parse_port(raw.get("port", 3306))
     include_tables = parse_optional_string_list(raw.get("include_tables"), "include_tables")
     exclude_tables = parse_optional_string_list(raw.get("exclude_tables"), "exclude_tables")
+    mock_schema_path = resolve_relative_path(base_dir, raw.get("mock_schema_path"))
+
+    host: str | None = None
+    user: str | None = None
+    password: str | None = None
+    port: int | None = None
+
+    if mode == "mysql":
+        host = require_non_empty_string(raw, "host")
+        user = require_non_empty_string(raw, "user")
+        password = require_non_empty_string(raw, "password")
+        port = parse_port(raw.get("port", 3306))
+    else:
+        if mock_schema_path is None:
+            raise ConfigError(
+                "Config field mock_schema_path is required when mode is 'mock'."
+            )
+        if not mock_schema_path.is_file():
+            raise ConfigError(f"Mock schema file was not found: {mock_schema_path}")
 
     if include_tables and exclude_tables:
         overlap = sorted(set(include_tables).intersection(exclude_tables))
@@ -137,6 +157,7 @@ def load_config(config_path: Path) -> AppConfig:
         raise ConfigError(f"Gemini prompt file was not found: {prompt_path}")
 
     return AppConfig(
+        mode=mode,
         host=host,
         port=port,
         user=user,
@@ -148,6 +169,7 @@ def load_config(config_path: Path) -> AppConfig:
         gemini_api_key=gemini_api_key,
         include_tables=include_tables,
         exclude_tables=exclude_tables,
+        mock_schema_path=mock_schema_path,
     )
 
 
@@ -197,6 +219,12 @@ def resolve_gemini_api_key(config: AppConfig) -> str:
             "Gemini API key is missing. Set gemini_api_key in DBconfig.json or GEMINI_API_KEY in the environment."
         )
     return api_key
+
+
+def load_schema_model(config: AppConfig) -> dict[str, Any]:
+    if config.mode == "mock":
+        return load_mock_schema(config)
+    return load_mysql_schema(config)
 
 
 def build_gemini_client(api_key: str) -> tuple[Any, Any, Any]:
@@ -410,6 +438,131 @@ def load_mysql_schema(config: AppConfig) -> dict[str, Any]:
             connection.close()
         except Exception:
             pass
+
+
+def load_mock_schema(config: AppConfig) -> dict[str, Any]:
+    assert config.mock_schema_path is not None
+    try:
+        raw = json.loads(config.mock_schema_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise DatabaseSchemaError(
+            f"Mock schema file not found: {config.mock_schema_path}"
+        ) from exc
+    except json.JSONDecodeError as exc:
+        raise DatabaseSchemaError(
+            f"Mock schema file is not valid JSON: {config.mock_schema_path}"
+        ) from exc
+
+    if not isinstance(raw, dict):
+        raise DatabaseSchemaError("Mock schema file must contain a JSON object.")
+
+    database_name = str(raw.get("database") or config.database).strip() or config.database
+    tables = raw.get("tables")
+    relationships = raw.get("relationships", [])
+
+    if not isinstance(tables, list) or not tables:
+        raise DatabaseSchemaError("Mock schema file must contain a non-empty tables array.")
+    if not isinstance(relationships, list):
+        raise DatabaseSchemaError("Mock schema file field relationships must be a list.")
+
+    available_names: list[str] = []
+    normalized_tables: list[dict[str, Any]] = []
+    for table in tables:
+        if not isinstance(table, dict):
+            raise DatabaseSchemaError("Each mock schema table must be a JSON object.")
+        table_name = str(table.get("table_name", "")).strip()
+        if not table_name:
+            raise DatabaseSchemaError("Each mock schema table must include table_name.")
+        available_names.append(table_name)
+        columns = table.get("columns")
+        if not isinstance(columns, list) or not columns:
+            raise DatabaseSchemaError(
+                f"Mock schema table {table_name!r} must contain a non-empty columns array."
+            )
+        normalized_columns: list[dict[str, Any]] = []
+        for column in columns:
+            if not isinstance(column, dict):
+                raise DatabaseSchemaError(
+                    f"Columns for mock schema table {table_name!r} must be JSON objects."
+                )
+            column_name = str(column.get("column_name", "")).strip()
+            if not column_name:
+                raise DatabaseSchemaError(
+                    f"Mock schema table {table_name!r} contains a column without column_name."
+                )
+            ordinal = column.get("ordinal")
+            try:
+                ordinal_value = int(ordinal)
+            except (TypeError, ValueError) as exc:
+                raise DatabaseSchemaError(
+                    f"Mock schema table {table_name!r} column {column_name!r} has invalid ordinal."
+                ) from exc
+
+            normalized_columns.append(
+                {
+                    "ordinal": ordinal_value,
+                    "column_name": column_name,
+                    "data_type": str(column.get("data_type", "")).strip() or "varchar",
+                    "column_type": str(column.get("column_type", "")).strip()
+                    or str(column.get("data_type", "")).strip()
+                    or "varchar",
+                    "length_precision": str(column.get("length_precision", "") or ""),
+                    "is_primary_key": bool(column.get("is_primary_key", False)),
+                    "foreign_key_reference": str(column.get("foreign_key_reference", "") or ""),
+                    "is_not_null": bool(column.get("is_not_null", False)),
+                    "default": format_default(column.get("default")),
+                    "column_comment": clean_comment(column.get("column_comment")),
+                    "extra": str(column.get("extra", "") or ""),
+                }
+            )
+
+        normalized_columns.sort(key=lambda item: item["ordinal"])
+        normalized_tables.append(
+            {
+                "table_name": table_name,
+                "table_comment": clean_comment(table.get("table_comment")),
+                "columns": normalized_columns,
+            }
+        )
+
+    selected_names = apply_table_filters(
+        available_names,
+        include_tables=config.include_tables,
+        exclude_tables=config.exclude_tables,
+    )
+    selected_set = set(selected_names)
+    filtered_tables = [
+        table for table in normalized_tables if table["table_name"] in selected_set
+    ]
+    filtered_relationships = []
+    for relationship in relationships:
+        if not isinstance(relationship, dict):
+            continue
+        from_table = str(relationship.get("from_table", "")).strip()
+        to_table = str(relationship.get("to_table", "")).strip()
+        if from_table in selected_set and to_table in selected_set:
+            filtered_relationships.append(
+                {
+                    "from_table": from_table,
+                    "from_column": str(relationship.get("from_column", "")).strip(),
+                    "to_table": to_table,
+                    "to_column": str(relationship.get("to_column", "")).strip(),
+                    "constraint_name": str(relationship.get("constraint_name", "")).strip(),
+                    "update_rule": str(relationship.get("update_rule", "")).strip(),
+                    "delete_rule": str(relationship.get("delete_rule", "")).strip(),
+                }
+            )
+
+    if not filtered_tables:
+        raise DatabaseSchemaError(
+            "No mock schema tables remain after applying include/exclude filters."
+        )
+
+    return {
+        "database": database_name,
+        "tables": filtered_tables,
+        "relationships": filtered_relationships,
+    }
 
 
 def fetch_tables(cursor: Any, database: str) -> list[dict[str, Any]]:
@@ -886,6 +1039,27 @@ def write_markdown(output_dir: Path, base_name: str, markdown_text: str) -> Path
     return markdown_path
 
 
+def write_html(markdown_path: Path, markdown_text: str, title: str) -> Path:
+    try:
+        import markdown as markdown_lib
+    except ImportError as exc:
+        raise PdfError(
+            "The markdown package is not installed. Run `pip install -r requirements.txt`."
+        ) from exc
+
+    html_body = markdown_lib.markdown(
+        markdown_text,
+        extensions=["fenced_code", "tables", "sane_lists"],
+        output_format="html5",
+    )
+    html_body = convert_mermaid_code_blocks(html_body)
+    document_html = build_export_html(title, html_body)
+
+    html_path = markdown_path.with_suffix(".html")
+    html_path.write_text(document_html, encoding="utf-8")
+    return html_path
+
+
 def prompt_for_pdf_export() -> bool:
     try:
         choice = input("Export PDF? [y/N]: ").strip().lower()
@@ -894,7 +1068,20 @@ def prompt_for_pdf_export() -> bool:
     return choice in {"y", "yes"}
 
 
-def build_pdf_html(title: str, body_html: str) -> str:
+def convert_mermaid_code_blocks(body_html: str) -> str:
+    pattern = re.compile(
+        r"<pre><code class=\"language-mermaid\">(.*?)</code></pre>",
+        re.DOTALL,
+    )
+
+    def replacer(match: re.Match[str]) -> str:
+        mermaid_source = html.unescape(match.group(1)).strip()
+        return f'<div class="mermaid">{mermaid_source}</div>'
+
+    return pattern.sub(replacer, body_html)
+
+
+def build_export_html(title: str, body_html: str) -> str:
     escaped_title = html.escape(title)
     return f"""<!doctype html>
 <html>
@@ -902,12 +1089,19 @@ def build_pdf_html(title: str, body_html: str) -> str:
   <meta charset="utf-8">
   <title>{escaped_title}</title>
   <style>
+    @page {{
+      size: A4 landscape;
+      margin: 10mm;
+    }}
+
     body {{
       font-family: Helvetica, Arial, sans-serif;
-      font-size: 11pt;
+      font-size: 10pt;
       color: #111827;
       line-height: 1.45;
-      margin: 24px;
+      margin: 18px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }}
     h1, h2, h3, h4 {{
       color: #0f172a;
@@ -931,22 +1125,69 @@ def build_pdf_html(title: str, body_html: str) -> str:
       padding: 8px;
       white-space: pre-wrap;
     }}
+    .mermaid {{
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0 20px;
+      overflow: visible;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }}
     table {{
       width: 100%;
       border-collapse: collapse;
       margin: 12px 0;
-      font-size: 9pt;
+      font-size: 7.5pt;
+      table-layout: fixed;
     }}
     th, td {{
       border: 1px solid #d1d5db;
-      padding: 6px;
+      padding: 4px;
       vertical-align: top;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }}
     th {{
-      background: #f8fafc;
+      background: #dbeafe;
       text-align: left;
     }}
+    th:nth-child(1), td:nth-child(1) {{ width: 3%; }}
+    th:nth-child(2), td:nth-child(2) {{ width: 12%; }}
+    th:nth-child(3), td:nth-child(3) {{ width: 12%; }}
+    th:nth-child(4), td:nth-child(4) {{ width: 8%; }}
+    th:nth-child(5), td:nth-child(5) {{ width: 9%; }}
+    th:nth-child(6), td:nth-child(6) {{ width: 4%; text-align: center; }}
+    th:nth-child(7), td:nth-child(7) {{ width: 14%; }}
+    th:nth-child(8), td:nth-child(8) {{ width: 5%; text-align: center; }}
+    th:nth-child(9), td:nth-child(9) {{ width: 8%; }}
+    th:nth-child(10), td:nth-child(10) {{ width: 25%; }}
+    h2, h3, table, .mermaid {{
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }}
   </style>
+  <script type="module">
+    window.__MERMAID_RENDER_DONE = false;
+    window.__MERMAID_RENDER_ERROR = null;
+
+    try {{
+      const mermaidModule = await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+      const mermaid = mermaidModule.default;
+      mermaid.initialize({{
+        startOnLoad: false,
+        securityLevel: "loose",
+        theme: "default"
+      }});
+      await mermaid.run({{ querySelector: ".mermaid" }});
+    }} catch (error) {{
+      window.__MERMAID_RENDER_ERROR = String(error);
+      console.error("Mermaid render failed:", error);
+    }} finally {{
+      window.__MERMAID_RENDER_DONE = true;
+    }}
+  </script>
 </head>
 <body>
 {body_html}
@@ -954,34 +1195,52 @@ def build_pdf_html(title: str, body_html: str) -> str:
 </html>"""
 
 
-def write_pdf(markdown_path: Path, markdown_text: str, title: str) -> Path:
+def write_pdf(html_path: Path) -> Path:
     try:
-        import markdown as markdown_lib
+        from playwright.sync_api import Error as PlaywrightError
+        from playwright.sync_api import sync_playwright
     except ImportError as exc:
         raise PdfError(
-            "The markdown package is not installed. Run `pip install -r requirements.txt`."
+            "The playwright package is not installed. Run `pip install -r requirements.txt` and `python -m playwright install chromium`."
         ) from exc
+
+    pdf_path = html_path.with_suffix(".pdf")
 
     try:
-        from xhtml2pdf import pisa
-    except ImportError as exc:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            page = browser.new_page(viewport={"width": 1600, "height": 1000})
+            page.goto(html_path.resolve().as_uri(), wait_until="load")
+            page.wait_for_function(
+                "() => window.__MERMAID_RENDER_DONE === true",
+                timeout=30000,
+            )
+            mermaid_error = page.evaluate("() => window.__MERMAID_RENDER_ERROR")
+            if mermaid_error:
+                raise PdfError(
+                    "Mermaid failed to render in HTML. Ensure network access to the Mermaid CDN is available. "
+                    f"Renderer error: {mermaid_error}"
+                )
+            page.emulate_media(media="screen")
+            page.pdf(
+                path=str(pdf_path),
+                format="A4",
+                landscape=True,
+                print_background=True,
+                margin={
+                    "top": "10mm",
+                    "right": "10mm",
+                    "bottom": "10mm",
+                    "left": "10mm",
+                },
+            )
+            browser.close()
+    except PdfError:
+        raise
+    except PlaywrightError as exc:
         raise PdfError(
-            "The xhtml2pdf package is not installed. Run `pip install -r requirements.txt`."
+            "Playwright PDF export failed. Ensure Chromium is installed with `python -m playwright install chromium`."
         ) from exc
-
-    html_body = markdown_lib.markdown(
-        markdown_text,
-        extensions=["fenced_code", "tables", "sane_lists"],
-        output_format="html5",
-    )
-    document_html = build_pdf_html(title, html_body)
-    pdf_path = markdown_path.with_suffix(".pdf")
-
-    with pdf_path.open("wb") as handle:
-        result = pisa.CreatePDF(document_html, dest=handle)
-
-    if getattr(result, "err", 0):
-        raise PdfError(f"PDF generation failed for {pdf_path}.")
 
     return pdf_path
 
@@ -1007,10 +1266,15 @@ def main(argv: list[str] | None = None) -> int:
         log(f"Loading prompt: {config.prompt_path}")
         prompt_text = config.prompt_path.read_text(encoding="utf-8")
 
-        log(
-            f"Reading MySQL schema from {config.host}:{config.port}/{config.database}"
-        )
-        schema_model = load_mysql_schema(config)
+        if config.mode == "mock":
+            log(
+                f"Loading mock schema from {config.mock_schema_path} for database {config.database}"
+            )
+        else:
+            log(
+                f"Reading MySQL schema from {config.host}:{config.port}/{config.database}"
+            )
+        schema_model = load_schema_model(config)
 
         client, genai_types, genai_errors = build_gemini_client(api_key)
         generation_config = build_generation_config(genai_types)
@@ -1030,14 +1294,19 @@ def main(argv: list[str] | None = None) -> int:
 
         ai_data = extract_json_response(extract_response_text(response))
         markdown_text = build_markdown_document(schema_model, ai_data)
+        title = (
+            str(ai_data.get("document_title", "")).strip()
+            or f"{config.database} Schema Definition"
+        )
 
         base_name = safe_filename(f"{config.database}_schema")
         markdown_path = write_markdown(config.output_dir, base_name, markdown_text)
         log(f"Markdown written: {markdown_path}")
+        html_path = write_html(markdown_path, markdown_text, title)
+        log(f"HTML written: {html_path}")
 
-        title = str(ai_data.get("document_title", "")).strip() or f"{config.database} Schema Definition"
         if prompt_for_pdf_export():
-            pdf_path = write_pdf(markdown_path, markdown_text, title)
+            pdf_path = write_pdf(html_path)
             log(f"PDF written: {pdf_path}")
         else:
             log("PDF export skipped")
