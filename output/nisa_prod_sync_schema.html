@@ -106,7 +106,7 @@
 </head>
 <body>
 <h1>NISA Production Sync Database Schema</h1>
-<p>Schema definition for the NISA production synchronization database.</p>
+<p>Schema documentation for the NISA production sync database, detailing tables, columns, and their relationships.</p>
 <h2>Schema Overview</h2>
 <ul>
 <li>Database: <code>nisa_prod_sync</code></li>
@@ -589,7 +589,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this account record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -601,7 +601,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this account record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -613,7 +613,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the account record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -637,7 +637,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>The type of the account (e.g., 'Customer', 'Vendor').</td>
+<td>The type of the account (e.g., 'Revenue', 'Expense').</td>
 </tr>
 <tr>
 <td>7</td>
@@ -661,7 +661,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the account record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -673,7 +673,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the account record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -685,7 +685,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the account record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -697,13 +697,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the account record.</td>
 </tr>
 </tbody>
 </table>
 <h2>account_history</h2>
 <p><strong>Logical Name:</strong> Account History</p>
-<p>Stores historical versions of account information.</p>
+<p>Stores historical versions of account records.</p>
 <table>
 <thead>
 <tr>
@@ -742,7 +742,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this account record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -754,7 +754,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this account record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -766,7 +766,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the account record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -790,7 +790,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>The type of the account (e.g., 'Customer', 'Vendor').</td>
+<td>The type of the account (e.g., 'Revenue', 'Expense').</td>
 </tr>
 <tr>
 <td>7</td>
@@ -814,7 +814,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the account record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -826,7 +826,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the account record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -838,7 +838,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the account record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -850,7 +850,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the account record.</td>
 </tr>
 </tbody>
 </table>
@@ -895,7 +895,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this child item record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -907,7 +907,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this child item record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -919,7 +919,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the child item record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -943,7 +943,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the child item.</td>
+<td>The name of the child item.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -955,7 +955,7 @@
 <td>parent_item.parent_item_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the parent item.</td>
+<td>Foreign key referencing the parent item this child item belongs to.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -967,7 +967,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of royalty calculation (e.g., 'Percentage', 'Per Unit').</td>
+<td>The type of royalty calculation (e.g., 'Per Unit', 'Percentage').</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1015,7 +1015,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Manufacturer's Suggested Retail Price.</td>
+<td>Manufacturer's Suggested Retail Price for the child item.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -1027,7 +1027,7 @@
 <td>account.account_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the account responsible for sales.</td>
+<td>Foreign key referencing the account associated with sales of this child item.</td>
 </tr>
 <tr>
 <td>14</td>
@@ -1039,7 +1039,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The type of game this item belongs to.</td>
+<td>The type of game this child item is associated with.</td>
 </tr>
 <tr>
 <td>15</td>
@@ -1051,7 +1051,7 @@
 <td>platform.platform_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the platform this item is for.</td>
+<td>Foreign key referencing the platform on which this child item is available.</td>
 </tr>
 <tr>
 <td>16</td>
@@ -1063,7 +1063,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the child item record was created.</td>
 </tr>
 <tr>
 <td>17</td>
@@ -1075,7 +1075,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the child item record.</td>
 </tr>
 <tr>
 <td>18</td>
@@ -1087,7 +1087,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the child item record was last updated.</td>
 </tr>
 <tr>
 <td>19</td>
@@ -1099,13 +1099,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the child item record.</td>
 </tr>
 </tbody>
 </table>
 <h2>child_item_history</h2>
 <p><strong>Logical Name:</strong> Child Item History</p>
-<p>Stores historical versions of child item information.</p>
+<p>Stores historical versions of child item records.</p>
 <table>
 <thead>
 <tr>
@@ -1144,7 +1144,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this child item record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -1156,7 +1156,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this child item record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -1168,7 +1168,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the child item record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1192,7 +1192,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the child item.</td>
+<td>The name of the child item.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -1204,7 +1204,7 @@
 <td>parent_item.parent_item_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the parent item.</td>
+<td>Foreign key referencing the parent item this child item belongs to.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -1216,7 +1216,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of royalty calculation (e.g., 'Percentage', 'Per Unit').</td>
+<td>The type of royalty calculation (e.g., 'Per Unit', 'Percentage').</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1264,7 +1264,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Manufacturer's Suggested Retail Price.</td>
+<td>Manufacturer's Suggested Retail Price for the child item.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -1276,7 +1276,7 @@
 <td>account.account_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the account responsible for sales.</td>
+<td>Foreign key referencing the account associated with sales of this child item.</td>
 </tr>
 <tr>
 <td>14</td>
@@ -1288,7 +1288,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The type of game this item belongs to.</td>
+<td>The type of game this child item is associated with.</td>
 </tr>
 <tr>
 <td>15</td>
@@ -1300,7 +1300,7 @@
 <td>platform.platform_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the platform this item is for.</td>
+<td>Foreign key referencing the platform on which this child item is available.</td>
 </tr>
 <tr>
 <td>16</td>
@@ -1312,7 +1312,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the child item record was created.</td>
 </tr>
 <tr>
 <td>17</td>
@@ -1324,7 +1324,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the child item record.</td>
 </tr>
 <tr>
 <td>18</td>
@@ -1336,7 +1336,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the child item record was last updated.</td>
 </tr>
 <tr>
 <td>19</td>
@@ -1348,7 +1348,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the child item record.</td>
 </tr>
 </tbody>
 </table>
@@ -1393,7 +1393,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this contract record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -1405,7 +1405,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this contract record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -1417,7 +1417,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the contract record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1429,7 +1429,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The name of the contract.</td>
+<td>The name or title of the contract.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -1441,7 +1441,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Minimum Guarantee beginning balance for the contract.</td>
+<td>The beginning balance for Minimum Guarantee (MG) royalties.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -1453,7 +1453,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Per-Product beginning balance for the contract.</td>
+<td>The beginning balance for Profit Participation (PP) royalties.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -1465,7 +1465,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Original amount paid for the Minimum Guarantee.</td>
+<td>The original amount paid for Minimum Guarantee (MG) royalties.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1477,7 +1477,7 @@
 <td>licensor.licensor_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the licensor.</td>
+<td>Foreign key referencing the licensor associated with this contract.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -1489,7 +1489,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the contract record was created.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -1501,7 +1501,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the contract record.</td>
 </tr>
 <tr>
 <td>12</td>
@@ -1513,7 +1513,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the contract record was last updated.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -1525,13 +1525,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the contract record.</td>
 </tr>
 </tbody>
 </table>
 <h2>contract_history</h2>
 <p><strong>Logical Name:</strong> Contract History</p>
-<p>Stores historical versions of contract information.</p>
+<p>Stores historical versions of contract records.</p>
 <table>
 <thead>
 <tr>
@@ -1570,7 +1570,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this contract record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -1582,7 +1582,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this contract record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -1594,7 +1594,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the contract record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1606,7 +1606,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The name of the contract.</td>
+<td>The name or title of the contract.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -1618,7 +1618,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Minimum Guarantee beginning balance for the contract.</td>
+<td>The beginning balance for Minimum Guarantee (MG) royalties.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -1630,7 +1630,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Per-Product beginning balance for the contract.</td>
+<td>The beginning balance for Profit Participation (PP) royalties.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -1642,7 +1642,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Original amount paid for the Minimum Guarantee.</td>
+<td>The original amount paid for Minimum Guarantee (MG) royalties.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1654,7 +1654,7 @@
 <td>licensor.licensor_id</td>
 <td>Y</td>
 <td></td>
-<td>Foreign key referencing the licensor.</td>
+<td>Foreign key referencing the licensor associated with this contract.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -1666,7 +1666,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the contract record was created.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -1678,7 +1678,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the contract record.</td>
 </tr>
 <tr>
 <td>12</td>
@@ -1690,7 +1690,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the contract record was last updated.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -1702,7 +1702,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the contract record.</td>
 </tr>
 </tbody>
 </table>
@@ -1747,7 +1747,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this division record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -1759,7 +1759,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this division record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -1771,7 +1771,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the division record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1795,7 +1795,7 @@
 <td>account.account_id</td>
 <td>N</td>
 <td></td>
-<td>Foreign key referencing the default debit account for the division.</td>
+<td>Foreign key referencing the default debit account for this division.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -1807,7 +1807,7 @@
 <td>account.account_id</td>
 <td>N</td>
 <td></td>
-<td>Foreign key referencing the default credit account for the division.</td>
+<td>Foreign key referencing the default credit account for this division.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -1819,7 +1819,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the division record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1831,7 +1831,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the division record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -1843,7 +1843,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the division record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -1855,13 +1855,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the division record.</td>
 </tr>
 </tbody>
 </table>
 <h2>division_history</h2>
 <p><strong>Logical Name:</strong> Division History</p>
-<p>Stores historical versions of division information.</p>
+<p>Stores historical versions of division records.</p>
 <table>
 <thead>
 <tr>
@@ -1900,7 +1900,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this division record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -1912,7 +1912,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this division record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -1924,7 +1924,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the division record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1948,7 +1948,7 @@
 <td>account.account_id</td>
 <td>N</td>
 <td></td>
-<td>Foreign key referencing the default debit account for the division.</td>
+<td>Foreign key referencing the default debit account for this division.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -1960,7 +1960,7 @@
 <td>account.account_id</td>
 <td>N</td>
 <td></td>
-<td>Foreign key referencing the default credit account for the division.</td>
+<td>Foreign key referencing the default credit account for this division.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -1972,7 +1972,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the division record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -1984,7 +1984,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the division record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -1996,7 +1996,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the division record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2008,7 +2008,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the division record.</td>
 </tr>
 </tbody>
 </table>
@@ -2053,7 +2053,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this game title record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2065,7 +2065,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this game title record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2077,7 +2077,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the game title record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -2101,7 +2101,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>The release date of the game title.</td>
+<td>The official release date of the game title.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -2125,7 +2125,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the game title record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -2137,7 +2137,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the game title record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -2149,7 +2149,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the game title record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2161,13 +2161,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the game title record.</td>
 </tr>
 </tbody>
 </table>
 <h2>game_title_history</h2>
 <p><strong>Logical Name:</strong> Game Title History</p>
-<p>Stores historical versions of game title information.</p>
+<p>Stores historical versions of game title records.</p>
 <table>
 <thead>
 <tr>
@@ -2206,7 +2206,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this game title record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2218,7 +2218,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this game title record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2230,7 +2230,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the game title record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -2254,7 +2254,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>The release date of the game title.</td>
+<td>The official release date of the game title.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -2278,7 +2278,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the game title record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -2290,7 +2290,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the game title record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -2302,7 +2302,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the game title record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2314,13 +2314,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the game title record.</td>
 </tr>
 </tbody>
 </table>
 <h2>journal_entry_template</h2>
 <p><strong>Logical Name:</strong> Journal Entry Template</p>
-<p>Defines templates for generating journal entries.</p>
+<p>Defines templates for recurring journal entries.</p>
 <table>
 <thead>
 <tr>
@@ -2359,7 +2359,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this template record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2371,7 +2371,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this template record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2383,7 +2383,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the template record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -2431,7 +2431,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the template record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -2443,7 +2443,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the template record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -2455,7 +2455,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the template record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2467,13 +2467,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the template record.</td>
 </tr>
 </tbody>
 </table>
 <h2>journal_entry_template_history</h2>
 <p><strong>Logical Name:</strong> Journal Entry Template History</p>
-<p>Stores historical versions of journal entry template information.</p>
+<p>Stores historical versions of journal entry template records.</p>
 <table>
 <thead>
 <tr>
@@ -2512,7 +2512,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this template record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2524,7 +2524,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this template record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2536,7 +2536,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the template record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -2584,7 +2584,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the template record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -2596,7 +2596,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the template record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -2608,7 +2608,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the template record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2620,13 +2620,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the template record.</td>
 </tr>
 </tbody>
 </table>
 <h2>licensor</h2>
 <p><strong>Logical Name:</strong> Licensor</p>
-<p>Stores information about licensors.</p>
+<p>Stores information about entities that grant licenses.</p>
 <table>
 <thead>
 <tr>
@@ -2665,7 +2665,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this licensor record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2677,7 +2677,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this licensor record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2689,7 +2689,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the licensor record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -2713,7 +2713,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Specifies how the Minimum Guarantee balance is calculated.</td>
+<td>The method used to calculate Minimum Guarantee (MG) balance.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -2725,7 +2725,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Specifies the method for calculating royalties.</td>
+<td>The method used to calculate royalties.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -2737,7 +2737,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the licensor record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -2749,7 +2749,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the licensor record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -2761,7 +2761,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the licensor record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2773,13 +2773,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the licensor record.</td>
 </tr>
 </tbody>
 </table>
 <h2>licensor_history</h2>
 <p><strong>Logical Name:</strong> Licensor History</p>
-<p>Stores historical versions of licensor information.</p>
+<p>Stores historical versions of licensor records.</p>
 <table>
 <thead>
 <tr>
@@ -2818,7 +2818,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this licensor record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2830,7 +2830,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this licensor record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2842,7 +2842,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the licensor record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -2866,7 +2866,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Specifies how the Minimum Guarantee balance is calculated.</td>
+<td>The method used to calculate Minimum Guarantee (MG) balance.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -2878,7 +2878,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Specifies the method for calculating royalties.</td>
+<td>The method used to calculate royalties.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -2890,7 +2890,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the licensor record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -2902,7 +2902,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the licensor record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -2914,7 +2914,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the licensor record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -2926,13 +2926,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the licensor record.</td>
 </tr>
 </tbody>
 </table>
 <h2>monthly_royalty</h2>
 <p><strong>Logical Name:</strong> Monthly Royalty</p>
-<p>Aggregated monthly royalty data, linking various entities.</p>
+<p>Aggregated royalty information for a given month, linking licensor, contract, game title, division, accounts, and child item details.</p>
 <table>
 <thead>
 <tr>
@@ -2971,7 +2971,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the licensor record at the time of aggregation.</td>
+<td>The effective start date of the licensor's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2983,7 +2983,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the licensor record at the time of aggregation.</td>
+<td>The effective end date of the licensor's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -2995,7 +2995,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the licensor record at the time of aggregation.</td>
+<td>The version ID of the licensor's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -3007,7 +3007,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the licensor.</td>
+<td>The name of the licensor.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -3019,7 +3019,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of calculation for Minimum Guarantee balance.</td>
+<td>The method used to calculate Minimum Guarantee (MG) balance for the licensor.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -3031,7 +3031,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of calculation for royalties.</td>
+<td>The method used to calculate royalties for the licensor.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -3055,7 +3055,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the contract record at the time of aggregation.</td>
+<td>The effective start date of the contract's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -3067,7 +3067,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the contract record at the time of aggregation.</td>
+<td>The effective end date of the contract's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -3079,7 +3079,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the contract record at the time of aggregation.</td>
+<td>The version ID of the contract's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>12</td>
@@ -3091,7 +3091,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the contract.</td>
+<td>The name of the contract.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -3103,7 +3103,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Minimum Guarantee beginning balance for the contract.</td>
+<td>The beginning balance for Minimum Guarantee (MG) royalties for the contract.</td>
 </tr>
 <tr>
 <td>14</td>
@@ -3115,7 +3115,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Per-Product beginning balance for the contract.</td>
+<td>The beginning balance for Profit Participation (PP) royalties for the contract.</td>
 </tr>
 <tr>
 <td>15</td>
@@ -3127,7 +3127,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Original amount paid for the Minimum Guarantee.</td>
+<td>The original amount paid for Minimum Guarantee (MG) royalties for the contract.</td>
 </tr>
 <tr>
 <td>16</td>
@@ -3151,7 +3151,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the game title record at the time of aggregation.</td>
+<td>The effective start date of the game title's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>18</td>
@@ -3163,7 +3163,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the game title record at the time of aggregation.</td>
+<td>The effective end date of the game title's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>19</td>
@@ -3175,7 +3175,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the game title record at the time of aggregation.</td>
+<td>The version ID of the game title's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>20</td>
@@ -3187,7 +3187,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the game title.</td>
+<td>The name of the game title.</td>
 </tr>
 <tr>
 <td>21</td>
@@ -3199,7 +3199,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Release date of the game title.</td>
+<td>The release date of the game title.</td>
 </tr>
 <tr>
 <td>22</td>
@@ -3223,7 +3223,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the parent item record at the time of aggregation.</td>
+<td>The effective start date of the parent item's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>24</td>
@@ -3235,7 +3235,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the parent item record at the time of aggregation.</td>
+<td>The effective end date of the parent item's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>25</td>
@@ -3247,7 +3247,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the parent item record at the time of aggregation.</td>
+<td>The version ID of the parent item's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>26</td>
@@ -3259,7 +3259,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Code of the parent item.</td>
+<td>The code of the parent item.</td>
 </tr>
 <tr>
 <td>27</td>
@@ -3271,7 +3271,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the parent item.</td>
+<td>The name of the parent item.</td>
 </tr>
 <tr>
 <td>28</td>
@@ -3283,7 +3283,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of the parent item.</td>
+<td>The type of the parent item.</td>
 </tr>
 <tr>
 <td>29</td>
@@ -3307,7 +3307,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the division record at the time of aggregation.</td>
+<td>The effective start date of the division's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>31</td>
@@ -3319,7 +3319,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the division record at the time of aggregation.</td>
+<td>The effective end date of the division's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>32</td>
@@ -3331,7 +3331,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the division record at the time of aggregation.</td>
+<td>The version ID of the division's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>33</td>
@@ -3343,7 +3343,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Name of the division.</td>
+<td>The name of the division.</td>
 </tr>
 <tr>
 <td>34</td>
@@ -3367,7 +3367,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the debit account record at the time of aggregation.</td>
+<td>The effective start date of the debit account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>36</td>
@@ -3379,7 +3379,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the debit account record at the time of aggregation.</td>
+<td>The effective end date of the debit account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>37</td>
@@ -3391,7 +3391,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the debit account record at the time of aggregation.</td>
+<td>The version ID of the debit account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>38</td>
@@ -3403,7 +3403,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Name of the debit account.</td>
+<td>The name of the debit account.</td>
 </tr>
 <tr>
 <td>39</td>
@@ -3415,7 +3415,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Type of the debit account.</td>
+<td>The type of the debit account.</td>
 </tr>
 <tr>
 <td>40</td>
@@ -3439,7 +3439,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the credit account record at the time of aggregation.</td>
+<td>The effective start date of the credit account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>42</td>
@@ -3451,7 +3451,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the credit account record at the time of aggregation.</td>
+<td>The effective end date of the credit account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>43</td>
@@ -3463,7 +3463,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the credit account record at the time of aggregation.</td>
+<td>The version ID of the credit account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>44</td>
@@ -3475,7 +3475,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Name of the credit account.</td>
+<td>The name of the credit account.</td>
 </tr>
 <tr>
 <td>45</td>
@@ -3487,7 +3487,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Type of the credit account.</td>
+<td>The type of the credit account.</td>
 </tr>
 <tr>
 <td>46</td>
@@ -3511,7 +3511,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the child item record at the time of aggregation.</td>
+<td>The effective start date of the child item's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>48</td>
@@ -3523,7 +3523,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the child item record at the time of aggregation.</td>
+<td>The effective end date of the child item's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>49</td>
@@ -3535,7 +3535,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the child item record at the time of aggregation.</td>
+<td>The version ID of the child item's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>50</td>
@@ -3547,7 +3547,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Code of the child item.</td>
+<td>The code of the child item.</td>
 </tr>
 <tr>
 <td>51</td>
@@ -3559,7 +3559,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the child item.</td>
+<td>The name of the child item.</td>
 </tr>
 <tr>
 <td>52</td>
@@ -3571,7 +3571,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of royalty calculation.</td>
+<td>The type of royalty calculation for the child item.</td>
 </tr>
 <tr>
 <td>53</td>
@@ -3583,7 +3583,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Royalty amount per unit.</td>
+<td>The royalty amount per unit for the child item.</td>
 </tr>
 <tr>
 <td>54</td>
@@ -3595,7 +3595,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Royalty percentage.</td>
+<td>The royalty percentage for the child item.</td>
 </tr>
 <tr>
 <td>55</td>
@@ -3607,7 +3607,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Price per unit.</td>
+<td>The unit price of the child item.</td>
 </tr>
 <tr>
 <td>56</td>
@@ -3619,7 +3619,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Manufacturer's Suggested Retail Price.</td>
+<td>Manufacturer's Suggested Retail Price for the child item.</td>
 </tr>
 <tr>
 <td>57</td>
@@ -3643,7 +3643,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the sales account record at the time of aggregation.</td>
+<td>The effective start date of the sales account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>59</td>
@@ -3655,7 +3655,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the sales account record at the time of aggregation.</td>
+<td>The effective end date of the sales account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>60</td>
@@ -3667,7 +3667,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the sales account record at the time of aggregation.</td>
+<td>The version ID of the sales account's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>61</td>
@@ -3679,7 +3679,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Name of the sales account.</td>
+<td>The name of the sales account.</td>
 </tr>
 <tr>
 <td>62</td>
@@ -3691,7 +3691,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Type of the sales account.</td>
+<td>The type of the sales account.</td>
 </tr>
 <tr>
 <td>63</td>
@@ -3703,7 +3703,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of the game.</td>
+<td>The type of game.</td>
 </tr>
 <tr>
 <td>64</td>
@@ -3727,7 +3727,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective start date of the platform record at the time of aggregation.</td>
+<td>The effective start date of the platform's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>66</td>
@@ -3739,7 +3739,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The effective end date of the platform record at the time of aggregation.</td>
+<td>The effective end date of the platform's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>67</td>
@@ -3751,7 +3751,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the platform record at the time of aggregation.</td>
+<td>The version ID of the platform's record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>68</td>
@@ -3763,7 +3763,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Code of the platform.</td>
+<td>The code of the platform.</td>
 </tr>
 <tr>
 <td>69</td>
@@ -3775,7 +3775,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the platform.</td>
+<td>The name of the platform.</td>
 </tr>
 <tr>
 <td>70</td>
@@ -3787,7 +3787,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The date of the order.</td>
+<td>The date of the order associated with this royalty calculation.</td>
 </tr>
 <tr>
 <td>71</td>
@@ -3799,7 +3799,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The version ID of the sales record at the time of aggregation.</td>
+<td>The version ID of the sales record at the time of this royalty calculation.</td>
 </tr>
 <tr>
 <td>72</td>
@@ -3811,19 +3811,19 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Quantity of items sold.</td>
+<td>The quantity of the child item sold.</td>
 </tr>
 <tr>
 <td>73</td>
 <td>sales</td>
-<td>Sales</td>
+<td>Sales Amount</td>
 <td>DECIMAL</td>
 <td>15,3</td>
 <td>N</td>
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Total sales amount.</td>
+<td>The total sales amount for the child item.</td>
 </tr>
 <tr>
 <td>74</td>
@@ -3835,19 +3835,19 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>Quantity of items manufactured.</td>
+<td>The quantity of the child item manufactured.</td>
 </tr>
 <tr>
 <td>75</td>
 <td>discount</td>
-<td>Discount</td>
+<td>Discount Amount</td>
 <td>DECIMAL</td>
 <td>15,3</td>
 <td>N</td>
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Discount applied to the sales.</td>
+<td>The discount applied to the sales.</td>
 </tr>
 <tr>
 <td>76</td>
@@ -3865,7 +3865,7 @@
 </table>
 <h2>monthly_royalty_status</h2>
 <p><strong>Logical Name:</strong> Monthly Royalty Status</p>
-<p>Tracks the status of monthly royalty calculations.</p>
+<p>Tracks the processing status of monthly royalty calculations.</p>
 <table>
 <thead>
 <tr>
@@ -3904,7 +3904,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this status record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -3916,7 +3916,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this status record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -3928,7 +3928,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the status record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -3940,7 +3940,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>The status code (e.g., 0 for pending, 1 for processed).</td>
+<td>The current status of the monthly royalty calculation (e.g., 0=Pending, 1=Processing, 2=Completed).</td>
 </tr>
 <tr>
 <td>6</td>
@@ -3952,7 +3952,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the status record was created.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -3964,7 +3964,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the status record.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -3976,7 +3976,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the status record was last updated.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -3988,13 +3988,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the status record.</td>
 </tr>
 </tbody>
 </table>
 <h2>monthly_royalty_status_history</h2>
 <p><strong>Logical Name:</strong> Monthly Royalty Status History</p>
-<p>Stores historical versions of monthly royalty status.</p>
+<p>Stores historical versions of monthly royalty status records.</p>
 <table>
 <thead>
 <tr>
@@ -4033,7 +4033,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this status record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -4045,7 +4045,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this status record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4057,7 +4057,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the status record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -4069,7 +4069,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>The status code (e.g., 0 for pending, 1 for processed).</td>
+<td>The current status of the monthly royalty calculation (e.g., 0=Pending, 1=Processing, 2=Completed).</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4081,7 +4081,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the status record was created.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4093,7 +4093,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the status record.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -4105,7 +4105,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the status record was last updated.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -4117,13 +4117,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the status record.</td>
 </tr>
 </tbody>
 </table>
 <h2>parent_item</h2>
 <p><strong>Logical Name:</strong> Parent Item</p>
-<p>Represents a collection or bundle of child items.</p>
+<p>Represents overarching items or product lines that contain multiple child items.</p>
 <table>
 <thead>
 <tr>
@@ -4162,7 +4162,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this parent item record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -4174,7 +4174,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this parent item record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4186,7 +4186,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the parent item record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -4210,7 +4210,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the parent item.</td>
+<td>The name of the parent item.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4222,7 +4222,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of the parent item (e.g., 'Bundle', 'Collection').</td>
+<td>The type of the parent item (e.g., 'Game', 'DLC').</td>
 </tr>
 <tr>
 <td>8</td>
@@ -4270,7 +4270,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the parent item record was created.</td>
 </tr>
 <tr>
 <td>12</td>
@@ -4282,7 +4282,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the parent item record.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -4294,7 +4294,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the parent item record was last updated.</td>
 </tr>
 <tr>
 <td>14</td>
@@ -4306,13 +4306,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the parent item record.</td>
 </tr>
 </tbody>
 </table>
 <h2>parent_item_history</h2>
 <p><strong>Logical Name:</strong> Parent Item History</p>
-<p>Stores historical versions of parent item information.</p>
+<p>Stores historical versions of parent item records.</p>
 <table>
 <thead>
 <tr>
@@ -4351,7 +4351,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this parent item record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -4363,7 +4363,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this parent item record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4375,7 +4375,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the parent item record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -4399,7 +4399,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Name of the parent item.</td>
+<td>The name of the parent item.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4411,7 +4411,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Type of the parent item (e.g., 'Bundle', 'Collection').</td>
+<td>The type of the parent item (e.g., 'Game', 'DLC').</td>
 </tr>
 <tr>
 <td>8</td>
@@ -4459,7 +4459,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the parent item record was created.</td>
 </tr>
 <tr>
 <td>12</td>
@@ -4471,7 +4471,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the parent item record.</td>
 </tr>
 <tr>
 <td>13</td>
@@ -4483,7 +4483,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the parent item record was last updated.</td>
 </tr>
 <tr>
 <td>14</td>
@@ -4495,13 +4495,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the parent item record.</td>
 </tr>
 </tbody>
 </table>
 <h2>platform</h2>
 <p><strong>Logical Name:</strong> Platform</p>
-<p>Stores information about gaming platforms.</p>
+<p>Stores information about gaming platforms (e.g., PC, PlayStation, Xbox).</p>
 <table>
 <thead>
 <tr>
@@ -4540,7 +4540,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this record is effective.</td>
+<td>The start date for which this platform record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -4552,7 +4552,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this record is effective.</td>
+<td>The end date for which this platform record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4564,7 +4564,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the platform record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -4576,7 +4576,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Unique code for the platform.</td>
+<td>A short code representing the platform.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4588,7 +4588,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The name of the platform.</td>
+<td>The full name of the platform.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4600,7 +4600,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the platform record was created.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -4612,7 +4612,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the platform record.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -4624,7 +4624,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the platform record was last updated.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -4636,13 +4636,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the platform record.</td>
 </tr>
 </tbody>
 </table>
 <h2>platform_history</h2>
 <p><strong>Logical Name:</strong> Platform History</p>
-<p>Stores historical versions of platform information.</p>
+<p>Stores historical versions of platform records.</p>
 <table>
 <thead>
 <tr>
@@ -4681,7 +4681,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The start date for which this historical record is effective.</td>
+<td>The start date for which this platform record is effective.</td>
 </tr>
 <tr>
 <td>3</td>
@@ -4693,7 +4693,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The end date for which this historical record is effective.</td>
+<td>The end date for which this platform record is effective.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4705,7 +4705,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the platform record.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -4717,7 +4717,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Unique code for the platform.</td>
+<td>A short code representing the platform.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4729,7 +4729,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The name of the platform.</td>
+<td>The full name of the platform.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4741,7 +4741,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the platform record was created.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -4753,7 +4753,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the platform record.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -4765,7 +4765,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the platform record was last updated.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -4777,13 +4777,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the platform record.</td>
 </tr>
 </tbody>
 </table>
 <h2>royalty_adjustment</h2>
 <p><strong>Logical Name:</strong> Royalty Adjustment</p>
-<p>Records adjustments made to royalties for a specific child item on a given date.</p>
+<p>Records manual adjustments made to royalty calculations for a specific child item on a given date.</p>
 <table>
 <thead>
 <tr>
@@ -4834,7 +4834,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the royalty adjustment record.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4858,7 +4858,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>A note explaining the reason for the royalty adjustment.</td>
+<td>A description or reason for the royalty adjustment.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4870,7 +4870,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the royalty adjustment record was created.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4882,7 +4882,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the royalty adjustment record.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -4894,7 +4894,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the royalty adjustment record was last updated.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -4906,13 +4906,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the royalty adjustment record.</td>
 </tr>
 </tbody>
 </table>
 <h2>royalty_adjustment_history</h2>
 <p><strong>Logical Name:</strong> Royalty Adjustment History</p>
-<p>Stores historical versions of royalty adjustments.</p>
+<p>Stores historical versions of royalty adjustment records.</p>
 <table>
 <thead>
 <tr>
@@ -4963,7 +4963,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>Identifier for the version of the record.</td>
+<td>Identifier for the version of the royalty adjustment record.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4987,7 +4987,7 @@
 <td></td>
 <td>N</td>
 <td></td>
-<td>A note explaining the reason for the royalty adjustment.</td>
+<td>A description or reason for the royalty adjustment.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -4999,7 +4999,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the royalty adjustment record was created.</td>
 </tr>
 <tr>
 <td>7</td>
@@ -5011,7 +5011,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the royalty adjustment record.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -5023,7 +5023,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the royalty adjustment record was last updated.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -5035,7 +5035,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the royalty adjustment record.</td>
 </tr>
 </tbody>
 </table>
@@ -5109,14 +5109,14 @@
 <tr>
 <td>5</td>
 <td>sales</td>
-<td>Sales</td>
+<td>Sales Amount</td>
 <td>DECIMAL</td>
 <td>15,3</td>
 <td>N</td>
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The total sales amount for this transaction.</td>
+<td>The total revenue generated from this sale.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -5133,14 +5133,14 @@
 <tr>
 <td>7</td>
 <td>discount</td>
-<td>Discount</td>
+<td>Discount Amount</td>
 <td>DECIMAL</td>
 <td>15,3</td>
 <td>N</td>
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The discount applied to this sale.</td>
+<td>Any discount applied to this sale.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -5152,7 +5152,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the sales record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -5164,7 +5164,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the sales record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -5176,7 +5176,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the sales record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -5188,13 +5188,13 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the sales record.</td>
 </tr>
 </tbody>
 </table>
 <h2>sales_history</h2>
 <p><strong>Logical Name:</strong> Sales History</p>
-<p>Stores historical versions of sales transactions.</p>
+<p>Stores historical versions of sales records.</p>
 <table>
 <thead>
 <tr>
@@ -5262,14 +5262,14 @@
 <tr>
 <td>5</td>
 <td>sales</td>
-<td>Sales</td>
+<td>Sales Amount</td>
 <td>DECIMAL</td>
 <td>15,3</td>
 <td>N</td>
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The total sales amount for this transaction.</td>
+<td>The total revenue generated from this sale.</td>
 </tr>
 <tr>
 <td>6</td>
@@ -5286,14 +5286,14 @@
 <tr>
 <td>7</td>
 <td>discount</td>
-<td>Discount</td>
+<td>Discount Amount</td>
 <td>DECIMAL</td>
 <td>15,3</td>
 <td>N</td>
 <td></td>
 <td>Y</td>
 <td></td>
-<td>The discount applied to this sale.</td>
+<td>Any discount applied to this sale.</td>
 </tr>
 <tr>
 <td>8</td>
@@ -5305,7 +5305,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was created.</td>
+<td>Timestamp when the sales record was created.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -5317,7 +5317,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who created the record.</td>
+<td>User who created the sales record.</td>
 </tr>
 <tr>
 <td>10</td>
@@ -5329,7 +5329,7 @@
 <td></td>
 <td>N</td>
 <td>CURRENT_TIMESTAMP</td>
-<td>Timestamp when the record was last updated.</td>
+<td>Timestamp when the sales record was last updated.</td>
 </tr>
 <tr>
 <td>11</td>
@@ -5341,7 +5341,7 @@
 <td></td>
 <td>Y</td>
 <td></td>
-<td>User who last updated the record.</td>
+<td>User who last updated the sales record.</td>
 </tr>
 </tbody>
 </table>
